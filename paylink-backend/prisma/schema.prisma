@@ -1,0 +1,210 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Merchant {
+  id            String        @id @default(uuid())
+  email         String        @unique
+  businessName  String
+  passwordHash  String
+  feeTier       FeeTier       @default(STARTER)
+  apiKeys       ApiKey[]
+  links         PaymentLink[]
+  transactions  Transaction[]
+  refunds       Refund[]
+  webhookUrl    String?
+  webhookSecret String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model ApiKey {
+  id         String    @id @default(uuid())
+  merchantId String
+  merchant   Merchant  @relation(fields: [merchantId], references: [id])
+  keyHash    String    @unique
+  label      String
+  expiresAt  DateTime?
+  createdAt  DateTime  @default(now())
+}
+
+model PayerAccount {
+  id                String                 @id @default(uuid())
+  email             String                 @unique
+  msisdnEncrypted   String
+  msisdnHash        String                 @unique
+  msisdnHint        String
+  preferredRail     String                 @default("PAWAPAY")
+  preferredProvider String                 @default("AIRTEL_MALAWI")
+  verified          Boolean                @default(false)
+  fcmToken          String?
+  transactions      Transaction[]
+  subscriptions     SubscriptionSchedule[]
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+}
+
+model PaymentLink {
+  id                String             @id @default(uuid())
+  merchantId        String
+  merchant          Merchant           @relation(fields: [merchantId], references: [id])
+  slug              String             @unique
+  type              LinkType
+  amount            Decimal?           @db.Decimal(18, 2)
+  currency          String             @default("MWK")
+  status            LinkStatus         @default(ACTIVE)
+  recurrenceConfig  Json?
+  expiresAt         DateTime?
+  metadata          Json?
+  qrCodeBase64      String?
+  transactions      Transaction[]
+  linkEvents        LinkEvent[]
+  analyticsSnapshot AnalyticsSnapshot?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+}
+
+model Transaction {
+  id               String        @id @default(uuid())
+  linkId           String
+  link             PaymentLink   @relation(fields: [linkId], references: [id])
+  merchantId       String
+  merchant         Merchant      @relation(fields: [merchantId], references: [id])
+  payerAccountId   String?
+  payerAccount     PayerAccount? @relation(fields: [payerAccountId], references: [id])
+  grossAmount      Decimal       @db.Decimal(18, 2)
+  feeRate          Decimal       @db.Decimal(6, 4)
+  feeAmount        Decimal       @db.Decimal(18, 2)
+  netAmount        Decimal       @db.Decimal(18, 2)
+  rail             String
+  providerCode     String
+  externalRef      String?       @unique
+  status           TxnStatus     @default(PENDING)
+  webhookDelivered Boolean       @default(false)
+  feeEntry         FeeEntry?
+  refunds          Refund[]
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+}
+
+model Refund {
+  id            String       @id @default(uuid())
+  transactionId String
+  transaction   Transaction  @relation(fields: [transactionId], references: [id])
+  merchantId    String
+  merchant      Merchant     @relation(fields: [merchantId], references: [id])
+  amount        Decimal      @db.Decimal(18, 2)
+  currency      String
+  status        RefundStatus @default(PENDING)
+  rail          String
+  externalRef   String?      @unique
+  reason        String
+  resolvedAt    DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+model FeeEntry {
+  id            String       @id @default(uuid())
+  transactionId String       @unique
+  transaction   Transaction  @relation(fields: [transactionId], references: [id])
+  merchantId    String
+  grossAmount   Decimal      @db.Decimal(18, 2)
+  feeRate       Decimal      @db.Decimal(6, 4)
+  feeAmount     Decimal      @db.Decimal(18, 2)
+  netAmount     Decimal      @db.Decimal(18, 2)
+  type          FeeEntryType @default(CHARGE)
+  refId         String?
+  createdAt     DateTime     @default(now())
+}
+
+model SubscriptionSchedule {
+  id              String       @id @default(uuid())
+  linkId          String
+  payerAccountId  String
+  payerAccount    PayerAccount @relation(fields: [payerAccountId], references: [id])
+  status          CycleStatus  @default(ACTIVE)
+  interval        String
+  nextDueAt       DateTime
+  retryCount      Int          @default(0)
+  cyclesCompleted Int          @default(0)
+  maxCycles       Int?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+model LinkEvent {
+  id        String      @id @default(uuid())
+  linkId    String
+  link      PaymentLink @relation(fields: [linkId], references: [id])
+  type      String
+  metadata  Json?
+  createdAt DateTime    @default(now())
+
+  @@index([linkId])
+}
+
+model AnalyticsSnapshot {
+  id             String      @id @default(uuid())
+  linkId         String      @unique
+  link           PaymentLink @relation(fields: [linkId], references: [id])
+  emailsSent     Int         @default(0)
+  paymentStarts  Int         @default(0)
+  conversions    Int         @default(0)
+  failures       Int         @default(0)
+  refunds        Int         @default(0)
+  conversionRate Decimal     @default(0) @db.Decimal(5, 4)
+  lastActivityAt DateTime?
+  updatedAt      DateTime    @updatedAt
+}
+
+enum FeeTier {
+  STARTER
+  GROWTH
+  ENTERPRISE
+}
+
+enum LinkType {
+  INVOICE
+  SUBSCRIPTION
+  DONATION
+  REQUEST
+}
+
+enum LinkStatus {
+  ACTIVE
+  EXPIRED
+  PAID
+  PARTIALLY_PAID
+  CANCELLED
+}
+
+enum TxnStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+enum RefundStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum CycleStatus {
+  ACTIVE
+  PAUSED
+  CANCELLED
+  COMPLETED
+}
+
+enum FeeEntryType {
+  CHARGE
+  REFUND_REVERSAL
+}

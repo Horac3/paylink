@@ -1,0 +1,29 @@
+# Dependencies
+**/node_modules/
+
+# Build outputs
+**/dist/
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/build/
+
+# Environment
+**/.env
+**/*.env.local
+**/firebase-service-account.json
+
+# IDE
+**/.vscode/
+**/.idea/
+
+# Logs
+**/*.log
+**/npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude
+.claude/settings.local.json

@@ -1,0 +1,26 @@
+import 'package:local_auth/local_auth.dart';
+
+class BiometricService {
+  final _auth = LocalAuthentication();
+
+  Future<bool> isAvailable() async {
+    final canCheck = await _auth.canCheckBiometrics;
+    final isDeviceSupported = await _auth.isDeviceSupported();
+    return canCheck || isDeviceSupported;
+  }
+
+  /// MUST be called before every payment confirmation. No bypass.
+  Future<bool> authenticate({required String reason}) async {
+    try {
+      return await _auth.authenticate(
+        localizedReason: reason,
+        options: const AuthenticationOptions(
+          biometricOnly: false,
+          stickyAuth: true,
+        ),
+      );
+    } catch (_) {
+      return false;
+    }
+  }
+}

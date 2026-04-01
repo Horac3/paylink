@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Payment Request</title></head>
+<body style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:20px">
+  <h1 style="color:#1a56db">Payment Request from {{merchantName}}</h1>
+  {{#if amount}}<p><strong>Amount:</strong> MWK {{amount}}</p>{{/if}}
+  {{#if description}}<p><strong>Description:</strong> {{description}}</p>{{/if}}
+  <p><a href="{{paymentUrl}}" style="background:#1a56db;color:#fff;padding:12px 24px;text-decoration:none;border-radius:6px;display:inline-block">Pay Now</a></p>
+  {{#if qrCodeBase64}}<p>Or scan the QR code:</p><img src="data:image/png;base64,{{qrCodeBase64}}" alt="QR Code" width="200">{{/if}}
+  <p style="color:#6b7280;font-size:12px">This link expires {{expiresAt}}.</p>
+</body>
+</html>

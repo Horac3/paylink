@@ -1,11 +1,13 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { IRailAdapter } from '../domain/ports/rail-adapter.interface';
 import { PawaPayAdapter } from './adapters/pawapay.adapter';
+import { TnmAdapter } from './adapters/tnm.adapter';
+import { AirtelAdapter } from './adapters/airtel.adapter';
 import { RailUnavailableError } from '@shared/errors/rail-errors';
 
 /**
  * @description Registry-based rail router. Maps railId strings to IRailAdapter instances.
- * To add a new rail: create adapter, inject it, call this.registry.set('TNM', tnmAdapter).
+ * To add a new rail: create adapter, inject it, call this.registry.set('RAIL_ID', adapter).
  * Nothing else changes.
  */
 @Injectable()
@@ -13,10 +15,16 @@ export class RailRouterService implements OnModuleInit {
   private readonly logger = new Logger(RailRouterService.name);
   private readonly registry = new Map<string, IRailAdapter>();
 
-  constructor(private readonly pawaPayAdapter: PawaPayAdapter) {}
+  constructor(
+    private readonly pawaPayAdapter: PawaPayAdapter,
+    private readonly tnmAdapter: TnmAdapter,
+    private readonly airtelAdapter: AirtelAdapter,
+  ) {}
 
   onModuleInit(): void {
     this.registry.set('PAWAPAY', this.pawaPayAdapter);
+    this.registry.set('TNM', this.tnmAdapter);
+    this.registry.set('AIRTEL', this.airtelAdapter);
     this.logger.log(`Rail registry: [${[...this.registry.keys()].join(', ')}]`);
   }
 

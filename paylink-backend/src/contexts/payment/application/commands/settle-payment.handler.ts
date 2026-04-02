@@ -30,6 +30,8 @@ export class SettlePaymentHandler implements ICommandHandler<SettlePaymentComman
     }
 
     txn.setExternalRef(cmd.externalRef);
+    if (cmd.receiptNumber) txn.setReceiptNumber(cmd.receiptNumber);
+    if (cmd.externalProviderRef) txn.setExternalProviderRef(cmd.externalProviderRef);
     txn.markSuccess();
     await this.repo.save(txn);
 

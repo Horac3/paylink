@@ -24,7 +24,7 @@ export class CreateLinkHandler implements ICommandHandler<CreateLinkCommand> {
     private readonly eventBus: EventBus,
   ) {}
 
-  async execute(cmd: CreateLinkCommand): Promise<{ id: string; slug: string }> {
+  async execute(cmd: CreateLinkCommand): Promise<{ id: string; slug: string; url: string }> {
     const slug = await this.slugGenerator.generate();
     const amount = cmd.amount ? Money.of(cmd.amount, cmd.currency) : null;
 
@@ -60,6 +60,6 @@ export class CreateLinkHandler implements ICommandHandler<CreateLinkCommand> {
     }
     link.clearEvents();
 
-    return { id: link.id, slug: slug.value };
+    return { id: link.id, slug: slug.value, url: payUrl };
   }
 }

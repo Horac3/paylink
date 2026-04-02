@@ -21,6 +21,8 @@ const makeTxn = (status = 'SUCCESS') =>
     rail: 'PAWAPAY',
     providerCode: 'AIRTEL_MALAWI',
     externalRef: 'ext-1',
+    receiptNumber: null,
+    externalProviderRef: null,
     status: status as 'SUCCESS' | 'PENDING' | 'FAILED' | 'REFUNDED',
     webhookDelivered: false,
   });

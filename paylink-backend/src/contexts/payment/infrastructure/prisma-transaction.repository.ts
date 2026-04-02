@@ -42,6 +42,8 @@ export class PrismaTransactionRepository implements ITransactionRepository {
       update: {
         status: txn.status,
         externalRef: txn.externalRef,
+        receiptNumber: txn.receiptNumber,
+        externalProviderRef: txn.externalProviderRef,
         webhookDelivered: txn.webhookDelivered,
       },
     });
@@ -59,6 +61,8 @@ export class PrismaTransactionRepository implements ITransactionRepository {
     rail: string;
     providerCode: string;
     externalRef: string | null;
+    receiptNumber: string | null;
+    externalProviderRef: string | null;
     status: string;
     webhookDelivered: boolean;
   }): Transaction {
@@ -74,6 +78,8 @@ export class PrismaTransactionRepository implements ITransactionRepository {
       rail: row.rail,
       providerCode: row.providerCode,
       externalRef: row.externalRef,
+      receiptNumber: row.receiptNumber,
+      externalProviderRef: row.externalProviderRef,
       status: row.status as TxnStatus,
       webhookDelivered: row.webhookDelivered,
     });

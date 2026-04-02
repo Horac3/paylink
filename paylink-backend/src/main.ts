@@ -16,8 +16,12 @@ async function bootstrap() {
   app.setGlobalPrefix('api/v1');
 
   // CORS
+  const allowedOrigins = [
+    config.get<string>('WEB_URL'),
+    config.get<string>('DOCS_URL', 'http://localhost:5173'),
+  ].filter(Boolean) as string[];
   app.enableCors({
-    origin: config.get<string>('WEB_URL'),
+    origin: allowedOrigins,
     credentials: true,
   });
 

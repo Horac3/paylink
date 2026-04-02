@@ -23,6 +23,28 @@ import { PrismaService } from '../../../../infrastructure/database/prisma.servic
 import { DomainError } from '@shared/errors/domain.error';
 import { JwtAdapter } from '@contexts/identity/infrastructure/jwt.adapter';
 
+/** Polling-only rails — schedule immediate polling instead of 10-min callback failsafe. */
+const POLLING_RAILS = new Set(['TNM', 'AIRTEL']);
+
+/**
+ * Detect Malawian MNO rail from MSISDN.
+ * TNM prefixes:   088X, 089X, 099X
+ * Airtel prefixes: 075X, 076X, 077X, 078X, 097X
+ */
+function detectRailFromMsisdn(msisdn: string): 'TNM' | 'AIRTEL' | null {
+  const local = msisdn.replace(/^(\+265|265)/, '');
+  if (local.startsWith('88') || local.startsWith('89') || local.startsWith('99')) return 'TNM';
+  if (
+    local.startsWith('75') ||
+    local.startsWith('76') ||
+    local.startsWith('77') ||
+    local.startsWith('78') ||
+    local.startsWith('97')
+  )
+    return 'AIRTEL';
+  return null;
+}
+
 @CommandHandler(InitiatePaymentCommand)
 export class InitiatePaymentHandler implements ICommandHandler<InitiatePaymentCommand> {
   private readonly logger = new Logger(InitiatePaymentHandler.name);
@@ -46,7 +68,7 @@ export class InitiatePaymentHandler implements ICommandHandler<InitiatePaymentCo
 
     // 2. Resolve MSISDN
     let msisdn: string;
-    let providerCode: string;
+    let providerCode: string | undefined;
     let payerAccountId: string | null = null;
 
     if (cmd.payerSessionToken) {
@@ -59,20 +81,34 @@ export class InitiatePaymentHandler implements ICommandHandler<InitiatePaymentCo
       payerAccountId = payer.payerId;
     } else if (cmd.msisdn) {
       msisdn = cmd.msisdn;
-      providerCode = cmd.providerCode ?? 'AIRTEL_MALAWI';
+      providerCode = cmd.providerCode ?? undefined;
     } else {
       throw new DomainError(
         'Either payerSessionToken or msisdn must be provided',
       );
     }
 
-    // 3. Auto-detect provider if not given
-    const adapter = this.railRouter.getDefaultAdapter();
-    if (!providerCode) {
-      providerCode = (await adapter.predictProvider(msisdn)) ?? 'AIRTEL_MALAWI';
+    // 3. Detect rail from MSISDN (override with explicit providerCode rail if supplied)
+    let rail: string;
+    if (cmd.rail) {
+      rail = cmd.rail;
+    } else {
+      const detected = detectRailFromMsisdn(msisdn);
+      if (!detected) {
+        throw new DomainError(
+          'Could not detect mobile network from MSISDN. Please select your provider.',
+        );
+      }
+      rail = detected;
     }
 
-    // 4. Calculate fees — fetch merchant tier
+    // 4. Get rail adapter and resolve provider code if missing
+    const adapter = this.railRouter.getAdapter(rail);
+    if (!providerCode) {
+      providerCode = (await adapter.predictProvider(msisdn)) ?? rail;
+    }
+
+    // 5. Calculate fees — fetch merchant tier
     const merchant = await this.prisma.merchant.findUnique({
       where: { id: link.merchantId },
     });
@@ -84,7 +120,7 @@ export class InitiatePaymentHandler implements ICommandHandler<InitiatePaymentCo
     const feeAmount = gross.multiplyByRate(feeRate);
     const netAmount = gross.subtract(feeAmount);
 
-    // 5. Create PENDING transaction
+    // 6. Create PENDING transaction
     const txn = Transaction.create({
       id: uuidv4(),
       linkId: link.linkId,
@@ -94,14 +130,14 @@ export class InitiatePaymentHandler implements ICommandHandler<InitiatePaymentCo
       feeRate: feeRate.toString(),
       feeAmount,
       netAmount,
-      rail: 'PAWAPAY',
+      rail,
       providerCode,
       externalRef: null,
     });
 
     await this.repo.save(txn);
 
-    // 6. Initiate deposit with txn.id as idempotency key
+    // 7. Initiate deposit with txn.id as idempotency key
     const result = await adapter.initiateDeposit({
       depositId: txn.id,
       phoneNumber: msisdn,
@@ -125,14 +161,28 @@ export class InitiatePaymentHandler implements ICommandHandler<InitiatePaymentCo
     }
     txn.clearEvents();
 
-    // 7. Schedule polling failsafe (10 min delay)
-    await this.pollingQueue.add(
-      'poll-deposit',
-      { transactionId: txn.id },
-      { delay: 10 * 60 * 1000 },
-    );
+    // 8. Schedule polling
+    // Polling-only rails (TNM/Airtel): start immediately, retry every 30s, max 20 attempts
+    // Callback-based rails (PawaPay): failsafe after 10 min delay, single attempt
+    if (POLLING_RAILS.has(rail)) {
+      await this.pollingQueue.add(
+        'poll-deposit',
+        { transactionId: txn.id, rail },
+        {
+          delay: 0,
+          attempts: 20,
+          backoff: { type: 'fixed', delay: 30_000 },
+        },
+      );
+    } else {
+      await this.pollingQueue.add(
+        'poll-deposit',
+        { transactionId: txn.id, rail },
+        { delay: 10 * 60 * 1000, attempts: 1 },
+      );
+    }
 
-    this.logger.log(`Payment initiated: ${txn.id} status=${result.status}`);
+    this.logger.log(`Payment initiated: ${txn.id} rail=${rail} status=${result.status}`);
     return { transactionId: txn.id, status: result.status };
   }
 }

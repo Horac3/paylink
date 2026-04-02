@@ -82,8 +82,10 @@ model Transaction {
   netAmount        Decimal       @db.Decimal(18, 2)
   rail             String
   providerCode     String
-  externalRef      String?       @unique
-  status           TxnStatus     @default(PENDING)
+  externalRef         String?       @unique
+  receiptNumber       String?       // TNM: receipt_number from settled invoice — needed for refunds
+  externalProviderRef String?       // Airtel: airtel_money_id — needed for refunds
+  status              TxnStatus     @default(PENDING)
   webhookDelivered Boolean       @default(false)
   feeEntry         FeeEntry?
   refunds          Refund[]

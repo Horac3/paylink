@@ -34,6 +34,18 @@ import { AdminModule } from './admin/admin.module';
         PAYER_SESSION_EXPIRY: Joi.string().default('30d'),
         PAWAPAY_API_TOKEN: Joi.string().required(),
         PAWAPAY_BASE_URL: Joi.string().uri().required(),
+        // TNM Mpamba
+        TNM_BASE_URL: Joi.string().uri().optional(),
+        TNM_WALLET: Joi.string().optional(),
+        TNM_PASSWORD: Joi.string().optional(),
+        // Airtel Money
+        AIRTEL_BASE_URL: Joi.string().uri().optional(),
+        AIRTEL_CLIENT_ID: Joi.string().optional(),
+        AIRTEL_CLIENT_SECRET: Joi.string().optional(),
+        AIRTEL_COUNTRY: Joi.string().default('MW'),
+        AIRTEL_CURRENCY: Joi.string().default('MWK'),
+        AIRTEL_DISBURSE_PIN: Joi.string().optional(),
+        AIRTEL_DISBURSE_PUBLIC_KEY: Joi.string().optional(),
         FIREBASE_SERVICE_ACCOUNT_PATH: Joi.string().optional(),
         FIREBASE_PROJECT_ID: Joi.string().required(),
         SMTP_HOST: Joi.string().required(),

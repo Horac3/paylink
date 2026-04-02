@@ -55,6 +55,8 @@ export interface TransactionProps {
   rail: string;
   providerCode: string;
   externalRef: string | null;
+  receiptNumber: string | null;       // TNM: receipt_number from settled invoice
+  externalProviderRef: string | null; // Airtel: airtel_money_id
   status: TxnStatus;
   webhookDelivered: boolean;
 }
@@ -100,6 +102,12 @@ export class Transaction {
   get externalRef(): string | null {
     return this._props.externalRef;
   }
+  get receiptNumber(): string | null {
+    return this._props.receiptNumber;
+  }
+  get externalProviderRef(): string | null {
+    return this._props.externalProviderRef;
+  }
   get status(): TxnStatus {
     return this._props.status;
   }
@@ -115,10 +123,12 @@ export class Transaction {
   }
 
   static create(
-    props: Omit<TransactionProps, 'status' | 'webhookDelivered'>,
+    props: Omit<TransactionProps, 'status' | 'webhookDelivered' | 'receiptNumber' | 'externalProviderRef'>,
   ): Transaction {
     const txn = new Transaction({
       ...props,
+      receiptNumber: null,
+      externalProviderRef: null,
       status: 'PENDING',
       webhookDelivered: false,
     });
@@ -141,6 +151,14 @@ export class Transaction {
 
   setExternalRef(ref: string): void {
     this._props = { ...this._props, externalRef: ref };
+  }
+
+  setReceiptNumber(receiptNumber: string): void {
+    this._props = { ...this._props, receiptNumber };
+  }
+
+  setExternalProviderRef(externalProviderRef: string): void {
+    this._props = { ...this._props, externalProviderRef };
   }
 
   /**

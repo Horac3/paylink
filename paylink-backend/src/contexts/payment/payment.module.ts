@@ -11,6 +11,9 @@ import { FailPaymentHandler } from './application/commands/fail-payment.handler'
 import { DepositCallbackProcessor } from './application/processors/deposit-callback.processor';
 import { PollingProcessor } from './application/processors/polling.processor';
 import { PawaPayAdapter } from './infrastructure/adapters/pawapay.adapter';
+import { TnmAdapter } from './infrastructure/adapters/tnm.adapter';
+import { AirtelAdapter } from './infrastructure/adapters/airtel.adapter';
+import { AirtelSigningService } from './infrastructure/adapters/airtel-signing.service';
 import { RailRouterService } from './infrastructure/rail-router.service';
 import { PrismaTransactionRepository } from './infrastructure/prisma-transaction.repository';
 import { TRANSACTION_REPOSITORY } from './domain/ports/transaction-repository.interface';
@@ -38,6 +41,9 @@ const CommandHandlers = [
     DepositCallbackProcessor,
     PollingProcessor,
     PawaPayAdapter,
+    TnmAdapter,
+    AirtelSigningService,
+    AirtelAdapter,
     RailRouterService,
     { provide: TRANSACTION_REPOSITORY, useClass: PrismaTransactionRepository },
   ],

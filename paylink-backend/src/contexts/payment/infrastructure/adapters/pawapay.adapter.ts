@@ -9,7 +9,7 @@ import {
   RailPayoutResult,
   RailRefundParams,
   RailRefundResult,
-  RailDepositStatus,
+  RailDepositStatusResult,
   RailRefundStatus,
   RailAvailability,
 } from '../../domain/ports/rail-adapter.interface';
@@ -150,12 +150,12 @@ export class PawaPayAdapter implements IRailAdapter {
     }
   }
 
-  async getDepositStatus(externalRef: string): Promise<RailDepositStatus> {
+  async getDepositStatus(externalRef: string): Promise<RailDepositStatusResult> {
     try {
       const { data } = await this.http.get<{ status: string }>(
         `/v2/deposits/${externalRef}`,
       );
-      return this.mapStatus(data.status);
+      return { status: this.mapStatus(data.status) };
     } catch (err) {
       throw this.mapError(err);
     }
@@ -214,7 +214,7 @@ export class PawaPayAdapter implements IRailAdapter {
     };
   }
 
-  private mapStatus(status: string): RailDepositStatus {
+  private mapStatus(status: string): 'PENDING' | 'COMPLETED' | 'FAILED' {
     if (status === 'COMPLETED') return 'COMPLETED';
     if (status === 'FAILED') return 'FAILED';
     return 'PENDING';

@@ -174,6 +174,8 @@ describe('SettlePaymentHandler idempotency', () => {
       rail: 'PAWAPAY',
       providerCode: 'AIRTEL_MALAWI',
       externalRef: 'ext-1',
+      receiptNumber: null,
+      externalProviderRef: null,
       status: 'SUCCESS',
       webhookDelivered: false,
     });

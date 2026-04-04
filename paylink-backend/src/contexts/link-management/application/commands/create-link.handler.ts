@@ -1,4 +1,4 @@
-import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
+import { CommandBus, CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { Inject, Logger } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateLinkCommand } from './create-link.command';
@@ -12,9 +12,19 @@ import { Money } from '@shared/domain/money.vo';
 import { RecurrencePolicy } from '../../domain/recurrence-policy.vo';
 import { SlugGeneratorService } from '../../infrastructure/slug-generator.service';
 import { QrCodeService } from '../../infrastructure/qr-code.service';
+import { CreateRecipientTokenCommand } from '@contexts/payment/application/commands/create-recipient-token.command';
+import type { CreateRecipientTokenResult } from '@contexts/payment/application/commands/create-recipient-token.handler';
+
+export interface CreateLinkResult {
+  id: string;
+  slug: string;
+  url: string;
+  hasRecipientToken: boolean;
+  recipientPaymentUrl?: string;
+}
 
 @CommandHandler(CreateLinkCommand)
-export class CreateLinkHandler implements ICommandHandler<CreateLinkCommand> {
+export class CreateLinkHandler implements ICommandHandler<CreateLinkCommand, CreateLinkResult> {
   private readonly logger = new Logger(CreateLinkHandler.name);
 
   constructor(
@@ -22,9 +32,10 @@ export class CreateLinkHandler implements ICommandHandler<CreateLinkCommand> {
     private readonly slugGenerator: SlugGeneratorService,
     private readonly qrCode: QrCodeService,
     private readonly eventBus: EventBus,
+    private readonly commandBus: CommandBus,
   ) {}
 
-  async execute(cmd: CreateLinkCommand): Promise<{ id: string; slug: string; url: string }> {
+  async execute(cmd: CreateLinkCommand): Promise<CreateLinkResult> {
     const slug = await this.slugGenerator.generate();
     const amount = cmd.amount ? Money.of(cmd.amount, cmd.currency) : null;
 
@@ -60,6 +71,22 @@ export class CreateLinkHandler implements ICommandHandler<CreateLinkCommand> {
     }
     link.clearEvents();
 
-    return { id: link.id, slug: slug.value, url: payUrl };
+    // If a recipient MSISDN was provided, create a pre-filled token via the payment context
+    if (cmd.recipientMsisdn) {
+      const tokenResult = await this.commandBus.execute<
+        CreateRecipientTokenCommand,
+        CreateRecipientTokenResult
+      >(new CreateRecipientTokenCommand(link.id, slug.value, cmd.recipientMsisdn, cmd.providerCode));
+
+      return {
+        id: link.id,
+        slug: slug.value,
+        url: payUrl,
+        hasRecipientToken: true,
+        recipientPaymentUrl: tokenResult.recipientPaymentUrl,
+      };
+    }
+
+    return { id: link.id, slug: slug.value, url: payUrl, hasRecipientToken: false };
   }
 }

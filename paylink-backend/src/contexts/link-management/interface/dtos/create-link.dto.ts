@@ -41,4 +41,21 @@ export class CreateLinkDto {
   @ApiPropertyOptional()
   @IsOptional()
   metadata?: Record<string, unknown>;
+
+  @ApiPropertyOptional({
+    description:
+      'Payer mobile number in E.164 format. If provided, a pre-filled payment link is generated — the STK push fires automatically when the payer opens the link, no number entry needed.',
+    example: '+265881234567',
+  })
+  @IsOptional()
+  @IsString()
+  recipientMsisdn?: string;
+
+  @ApiPropertyOptional({
+    description: 'MNO provider code. Auto-detected from MSISDN prefix if omitted.',
+    example: 'AIRTEL_MALAWI',
+  })
+  @IsOptional()
+  @IsString()
+  providerCode?: string;
 }

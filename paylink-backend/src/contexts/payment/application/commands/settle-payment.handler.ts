@@ -6,6 +6,7 @@ import {
   TRANSACTION_REPOSITORY,
 } from '../../domain/ports/transaction-repository.interface';
 import { NotFoundError } from '@shared/errors/not-found.error';
+import { PaymentSseService } from '../../infrastructure/payment-sse.service';
 
 @CommandHandler(SettlePaymentCommand)
 export class SettlePaymentHandler implements ICommandHandler<SettlePaymentCommand> {
@@ -15,6 +16,7 @@ export class SettlePaymentHandler implements ICommandHandler<SettlePaymentComman
     @Inject(TRANSACTION_REPOSITORY)
     private readonly repo: ITransactionRepository,
     private readonly eventBus: EventBus,
+    private readonly sseService: PaymentSseService,
   ) {}
 
   async execute(cmd: SettlePaymentCommand): Promise<void> {
@@ -39,6 +41,7 @@ export class SettlePaymentHandler implements ICommandHandler<SettlePaymentComman
       this.eventBus.publish(event);
     }
     txn.clearEvents();
+    this.sseService.push(cmd.transactionId, { status: 'SUCCESS', reference: cmd.externalRef });
     this.logger.log(`Payment settled: ${cmd.transactionId}`);
   }
 }

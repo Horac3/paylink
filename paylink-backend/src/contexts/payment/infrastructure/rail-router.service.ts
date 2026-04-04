@@ -1,8 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { IRailAdapter } from '../domain/ports/rail-adapter.interface';
 import { PawaPayAdapter } from './adapters/pawapay.adapter';
-import { TnmAdapter } from './adapters/tnm.adapter';
-import { AirtelAdapter } from './adapters/airtel.adapter';
 import { RailUnavailableError } from '@shared/errors/rail-errors';
 
 /**
@@ -15,16 +13,10 @@ export class RailRouterService implements OnModuleInit {
   private readonly logger = new Logger(RailRouterService.name);
   private readonly registry = new Map<string, IRailAdapter>();
 
-  constructor(
-    private readonly pawaPayAdapter: PawaPayAdapter,
-    private readonly tnmAdapter: TnmAdapter,
-    private readonly airtelAdapter: AirtelAdapter,
-  ) {}
+  constructor(private readonly pawaPayAdapter: PawaPayAdapter) {}
 
   onModuleInit(): void {
     this.registry.set('PAWAPAY', this.pawaPayAdapter);
-    this.registry.set('TNM', this.tnmAdapter);
-    this.registry.set('AIRTEL', this.airtelAdapter);
     this.logger.log(`Rail registry: [${[...this.registry.keys()].join(', ')}]`);
   }
 

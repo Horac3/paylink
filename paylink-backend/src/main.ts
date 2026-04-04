@@ -15,10 +15,14 @@ async function bootstrap() {
   // Global prefix
   app.setGlobalPrefix('api/v1');
 
-  // CORS
+  // CORS — web payment page, merchant portal, docs, local dev
   const allowedOrigins = [
-    config.get<string>('WEB_URL'),
-    config.get<string>('DOCS_URL', 'http://localhost:5173'),
+    config.get<string>('WEB_URL'),                               // paylink.never9to5ive.com
+    config.get<string>('MERCHANT_WEB_URL', 'http://localhost:5174'), // app.paylink.never9to5ive.com
+    config.get<string>('DOCS_URL', 'http://localhost:5175'),     // docs.paylink.never9to5ive.com
+    'http://localhost:5173',                                     // payment page dev
+    'http://localhost:5174',                                     // merchant portal dev
+    'http://localhost:5175',                                     // docs dev
   ].filter(Boolean) as string[];
   app.enableCors({
     origin: allowedOrigins,

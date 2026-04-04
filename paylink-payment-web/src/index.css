@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Base resets ─────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: #F9FAFB;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #111827;
+}
+
+#root {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Phone vibration animation ──────────────────────────────────────────── */
+@keyframes phone-vibrate {
+  0%   { transform: translateX(0) rotate(0deg); }
+  10%  { transform: translateX(-4px) rotate(-2deg); }
+  20%  { transform: translateX(4px) rotate(2deg); }
+  30%  { transform: translateX(-4px) rotate(-2deg); }
+  40%  { transform: translateX(4px) rotate(2deg); }
+  50%  { transform: translateX(-2px) rotate(-1deg); }
+  60%  { transform: translateX(2px) rotate(1deg); }
+  70%  { transform: translateX(-2px) rotate(-1deg); }
+  80%  { transform: translateX(2px) rotate(1deg); }
+  90%  { transform: translateX(-1px) rotate(0deg); }
+  100% { transform: translateX(0) rotate(0deg); }
+}
+
+.animate-phone-vibrate {
+  animation: phone-vibrate 0.8s ease-in-out infinite;
+  animation-play-state: running;
+}
+
+/* ─── Success checkmark animation ────────────────────────────────────────── */
+@keyframes checkmark-draw {
+  0%   { stroke-dashoffset: 100; opacity: 0; }
+  30%  { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 1; }
+}
+
+@keyframes checkmark-circle-draw {
+  0%   { stroke-dashoffset: 283; opacity: 0; }
+  20%  { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 1; }
+}
+
+@keyframes checkmark-scale-in {
+  0%   { transform: scale(0); opacity: 0; }
+  60%  { transform: scale(1.1); opacity: 1; }
+  80%  { transform: scale(0.95); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-checkmark-container {
+  animation: checkmark-scale-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.animate-checkmark-circle {
+  stroke-dasharray: 283;
+  stroke-dashoffset: 283;
+  animation: checkmark-circle-draw 0.8s ease forwards 0.1s;
+}
+
+.animate-checkmark-path {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: checkmark-draw 0.5s ease forwards 0.6s;
+}
+
+/* ─── Spinner ─────────────────────────────────────────────────────────────── */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-smooth {
+  animation: spin 1s linear infinite;
+}
+
+/* ─── Pulse ring for polling ─────────────────────────────────────────────── */
+@keyframes pulse-ring {
+  0%   { transform: scale(0.8); opacity: 0.8; }
+  50%  { transform: scale(1.05); opacity: 0.4; }
+  100% { transform: scale(0.8); opacity: 0.8; }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2s ease-in-out infinite;
+}

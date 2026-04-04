@@ -11,10 +11,15 @@ import {
   ITransactionRepository,
   TRANSACTION_REPOSITORY,
 } from '../../domain/ports/transaction-repository.interface';
+import {
+  IRecipientTokenRepository,
+  RECIPIENT_TOKEN_REPOSITORY,
+} from '../../domain/ports/recipient-token-repository.interface';
 import { Transaction } from '../../domain/transaction.aggregate';
 import { Money } from '@shared/domain/money.vo';
 import { FeeTier, FeeTierHelper } from '@shared/domain/fee-tier.vo';
 import { RailRouterService } from '../../infrastructure/rail-router.service';
+import { RecipientTokenService } from '../../infrastructure/recipient-token.service';
 import { ValidateLinkQuery } from '@contexts/link-management/application/queries/validate-link.query';
 import { ResolvePayerQuery } from '@contexts/payer-identity/application/queries/resolve-payer.query';
 import { InjectQueue } from '@nestjs/bullmq';
@@ -23,25 +28,14 @@ import { PrismaService } from '../../../../infrastructure/database/prisma.servic
 import { DomainError } from '@shared/errors/domain.error';
 import { JwtAdapter } from '@contexts/identity/infrastructure/jwt.adapter';
 
-/** Polling-only rails — schedule immediate polling instead of 10-min callback failsafe. */
-const POLLING_RAILS = new Set(['TNM', 'AIRTEL']);
+/** All payments go through PawaPay which handles MNO routing via providerCode. */
+const DEFAULT_RAIL = 'PAWAPAY';
 
-/**
- * Detect Malawian MNO rail from MSISDN.
- * TNM prefixes:   088X, 089X, 099X
- * Airtel prefixes: 075X, 076X, 077X, 078X, 097X
- */
-function detectRailFromMsisdn(msisdn: string): 'TNM' | 'AIRTEL' | null {
+/** Derive PawaPay providerCode from Malawian MSISDN prefix as a local fallback. */
+function detectProviderFromMsisdn(msisdn: string): string | null {
   const local = msisdn.replace(/^(\+265|265)/, '');
-  if (local.startsWith('88') || local.startsWith('89') || local.startsWith('99')) return 'TNM';
-  if (
-    local.startsWith('75') ||
-    local.startsWith('76') ||
-    local.startsWith('77') ||
-    local.startsWith('78') ||
-    local.startsWith('97')
-  )
-    return 'AIRTEL';
+  if (local.startsWith('88') || local.startsWith('89') || local.startsWith('99')) return 'TNM_MWI';
+  if (['75', '76', '77', '78', '97'].some((p) => local.startsWith(p))) return 'AIRTEL_MWI';
   return null;
 }
 
@@ -52,8 +46,11 @@ export class InitiatePaymentHandler implements ICommandHandler<InitiatePaymentCo
   constructor(
     @Inject(TRANSACTION_REPOSITORY)
     private readonly repo: ITransactionRepository,
+    @Inject(RECIPIENT_TOKEN_REPOSITORY)
+    private readonly recipientTokenRepo: IRecipientTokenRepository,
     private readonly queryBus: QueryBus,
     private readonly railRouter: RailRouterService,
+    private readonly recipientTokenService: RecipientTokenService,
     private readonly eventBus: EventBus,
     private readonly prisma: PrismaService,
     private readonly jwtAdapter: JwtAdapter,
@@ -66,12 +63,13 @@ export class InitiatePaymentHandler implements ICommandHandler<InitiatePaymentCo
     // 1. Validate link
     const link = await this.queryBus.execute(new ValidateLinkQuery(cmd.slug));
 
-    // 2. Resolve MSISDN
+    // 2. Resolve MSISDN via one of three strategies
     let msisdn: string;
     let providerCode: string | undefined;
     let payerAccountId: string | null = null;
 
     if (cmd.payerSessionToken) {
+      // Strategy A — registered payer app session
       const payload = this.jwtAdapter.verifyAccess(cmd.payerSessionToken);
       const payer = await this.queryBus.execute(
         new ResolvePayerQuery(payload.sub),
@@ -79,33 +77,42 @@ export class InitiatePaymentHandler implements ICommandHandler<InitiatePaymentCo
       msisdn = payer.msisdn;
       providerCode = cmd.providerCode ?? payer.preferredProvider;
       payerAccountId = payer.payerId;
+
+    } else if (cmd.recipientToken) {
+      // Strategy B — pre-filled recipient token (one-time use)
+      const tokenId = this.recipientTokenService.verify(cmd.recipientToken);
+      const token = await this.recipientTokenRepo.findById(tokenId);
+      if (!token) throw new DomainError('Recipient token not found');
+      if (!token.canBeUsed()) {
+        throw new DomainError('This payment link has already been used or has expired');
+      }
+      msisdn = this.recipientTokenService.decrypt(token.encryptedMsisdn);
+      providerCode = token.providerCode;
+      // Mark as used immediately — one-time only
+      await this.recipientTokenRepo.markUsed(tokenId);
+
     } else if (cmd.msisdn) {
+      // Strategy C — guest web payment
       msisdn = cmd.msisdn;
       providerCode = cmd.providerCode ?? undefined;
     } else {
       throw new DomainError(
-        'Either payerSessionToken or msisdn must be provided',
+        'No payment method provided. Supply payerSessionToken, recipientToken, or msisdn.',
       );
     }
 
-    // 3. Detect rail from MSISDN (override with explicit providerCode rail if supplied)
-    let rail: string;
-    if (cmd.rail) {
-      rail = cmd.rail;
-    } else {
-      const detected = detectRailFromMsisdn(msisdn);
-      if (!detected) {
-        throw new DomainError(
-          'Could not detect mobile network from MSISDN. Please select your provider.',
-        );
-      }
-      rail = detected;
-    }
+    // 3. All payments route through PawaPay; providerCode identifies the MNO
+    const rail = DEFAULT_RAIL;
 
     // 4. Get rail adapter and resolve provider code if missing
     const adapter = this.railRouter.getAdapter(rail);
     if (!providerCode) {
-      providerCode = (await adapter.predictProvider(msisdn)) ?? rail;
+      providerCode = (await adapter.predictProvider(msisdn)) ?? detectProviderFromMsisdn(msisdn) ?? undefined;
+    }
+    if (!providerCode) {
+      throw new DomainError(
+        'Could not determine provider code from MSISDN. Please select your provider manually.',
+      );
     }
 
     // 5. Calculate fees — fetch merchant tier
@@ -161,26 +168,12 @@ export class InitiatePaymentHandler implements ICommandHandler<InitiatePaymentCo
     }
     txn.clearEvents();
 
-    // 8. Schedule polling
-    // Polling-only rails (TNM/Airtel): start immediately, retry every 30s, max 20 attempts
-    // Callback-based rails (PawaPay): failsafe after 10 min delay, single attempt
-    if (POLLING_RAILS.has(rail)) {
-      await this.pollingQueue.add(
-        'poll-deposit',
-        { transactionId: txn.id, rail },
-        {
-          delay: 0,
-          attempts: 20,
-          backoff: { type: 'fixed', delay: 30_000 },
-        },
-      );
-    } else {
-      await this.pollingQueue.add(
-        'poll-deposit',
-        { transactionId: txn.id, rail },
-        { delay: 10 * 60 * 1000, attempts: 1 },
-      );
-    }
+    // 8. Schedule polling failsafe — PawaPay is callback-based; poll once after 10 min
+    await this.pollingQueue.add(
+      'poll-deposit',
+      { transactionId: txn.id, rail },
+      { delay: 10 * 60 * 1000, attempts: 1 },
+    );
 
     this.logger.log(`Payment initiated: ${txn.id} rail=${rail} status=${result.status}`);
     return { transactionId: txn.id, status: result.status };

@@ -39,6 +39,7 @@ describe('InitiateRefundHandler', () => {
     findById: jest.fn(),
     findByExternalRef: jest.fn(),
     save: jest.fn(),
+    listByMerchant: jest.fn(),
   };
   const mockRailRouter = {
     getAdapter: jest.fn().mockReturnValue({

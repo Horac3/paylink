@@ -57,6 +57,9 @@ import { AdminModule } from './admin/admin.module';
         ENCRYPTION_IV_LENGTH: Joi.number().default(16),
         APP_URL: Joi.string().uri().required(),
         WEB_URL: Joi.string().uri().required(),
+        DOCS_URL: Joi.string().uri().optional(),
+        RECIPIENT_TOKEN_SECRET: Joi.string().min(32).required(),
+        RECIPIENT_TOKEN_EXPIRY_HOURS: Joi.number().default(72),
         APP_PORT: Joi.number().default(3000),
         NODE_ENV: Joi.string()
           .valid('development', 'production', 'test')

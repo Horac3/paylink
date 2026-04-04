@@ -62,14 +62,14 @@ class AppTheme {
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           labelStyle: AppTextStyles.bodyMedium,
         ),
-        cardTheme: CardTheme(
-          color: Colors.white,
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-            side: const BorderSide(color: AppColors.divider),
-          ),
-        ),
+        // cardTheme: CardTheme(
+        //   color: Colors.white,
+        //   elevation: 0,
+        //   shape: RoundedRectangleBorder(
+        //     borderRadius: BorderRadius.circular(16),
+        //     side: const BorderSide(color: AppColors.divider),
+        //   ),
+        // ),
         dividerTheme: const DividerThemeData(color: AppColors.divider, space: 1),
         textTheme: TextTheme(
           displayLarge: AppTextStyles.displayLarge,

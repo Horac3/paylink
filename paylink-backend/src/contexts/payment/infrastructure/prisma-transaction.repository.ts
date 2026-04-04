@@ -1,7 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import Decimal from 'decimal.js';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../../infrastructure/database/prisma.service';
-import { ITransactionRepository } from '../domain/ports/transaction-repository.interface';
+import {
+  ITransactionRepository,
+  TransactionListParams,
+  TransactionListResult,
+} from '../domain/ports/transaction-repository.interface';
 import { Transaction, TxnStatus } from '../domain/transaction.aggregate';
 import { Money } from '@shared/domain/money.vo';
 
@@ -19,6 +24,32 @@ export class PrismaTransactionRepository implements ITransactionRepository {
       where: { externalRef },
     });
     return row ? this.toDomain(row) : null;
+  }
+
+  async listByMerchant(params: TransactionListParams): Promise<TransactionListResult> {
+    const { merchantId, page, limit, status, from, to } = params;
+    const where: Prisma.TransactionWhereInput = {
+      merchantId,
+      ...(status ? { status: status as Prisma.EnumTxnStatusFilter } : {}),
+      ...(from || to
+        ? {
+            createdAt: {
+              ...(from ? { gte: from } : {}),
+              ...(to ? { lte: to } : {}),
+            },
+          }
+        : {}),
+    };
+    const [rows, total] = await Promise.all([
+      this.prisma.transaction.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      this.prisma.transaction.count({ where }),
+    ]);
+    return { data: rows.map((r) => this.toDomain(r)), meta: { page, limit, total } };
   }
 
   async save(txn: Transaction): Promise<void> {

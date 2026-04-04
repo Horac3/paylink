@@ -10,5 +10,7 @@ export class CreateLinkCommand {
     readonly maxCycles: number | null,
     readonly expiresAt: Date | null,
     readonly metadata: Record<string, unknown> | null,
+    readonly recipientMsisdn: string | null = null,
+    readonly providerCode: string | null = null,
   ) {}
 }

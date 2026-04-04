@@ -6,6 +6,7 @@ import {
   TRANSACTION_REPOSITORY,
 } from '../../domain/ports/transaction-repository.interface';
 import { NotFoundError } from '@shared/errors/not-found.error';
+import { PaymentSseService } from '../../infrastructure/payment-sse.service';
 
 @CommandHandler(FailPaymentCommand)
 export class FailPaymentHandler implements ICommandHandler<FailPaymentCommand> {
@@ -15,6 +16,7 @@ export class FailPaymentHandler implements ICommandHandler<FailPaymentCommand> {
     @Inject(TRANSACTION_REPOSITORY)
     private readonly repo: ITransactionRepository,
     private readonly eventBus: EventBus,
+    private readonly sseService: PaymentSseService,
   ) {}
 
   async execute(cmd: FailPaymentCommand): Promise<void> {
@@ -27,6 +29,7 @@ export class FailPaymentHandler implements ICommandHandler<FailPaymentCommand> {
       this.eventBus.publish(event);
     }
     txn.clearEvents();
+    this.sseService.push(cmd.transactionId, { status: 'FAILED', failureCode: cmd.failureCode });
     this.logger.log(
       `Payment failed: ${cmd.transactionId} code=${cmd.failureCode}`,
     );

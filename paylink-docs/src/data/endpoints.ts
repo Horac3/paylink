@@ -122,8 +122,8 @@ export const payerEndpoints: Endpoint[] = [
     responseExample: {
       id: 'payer_01xyz456',
       email: 'payer@example.com',
-      preferredRail: 'AIRTEL',
-      preferredProvider: 'AIRTEL_MALAWI',
+      preferredRail: 'PAWAPAY',
+      preferredProvider: 'AIRTEL_MWI',
       isVerified: true,
       createdAt: '2024-01-15T09:30:00.000Z',
     },
@@ -136,13 +136,13 @@ export const payerEndpoints: Endpoint[] = [
     description: 'Set the payer\'s preferred payment rail and provider code.',
     auth: true,
     bodyParams: [
-      { name: 'rail', type: 'string', required: true, description: 'Payment rail', example: 'AIRTEL', options: ['PAWAPAY', 'TNM', 'AIRTEL'] },
-      { name: 'providerCode', type: 'string', required: false, description: 'Provider code within the rail', example: 'AIRTEL_MALAWI' },
+      { name: 'rail', type: 'string', required: true, description: 'Payment rail', example: 'PAWAPAY', options: ['PAWAPAY'] },
+      { name: 'providerCode', type: 'string', required: false, description: 'Provider code within the rail', example: 'AIRTEL_MWI', options: ['AIRTEL_MWI', 'TNM_MWI'] },
     ],
     responseExample: {
       id: 'payer_01xyz456',
-      preferredRail: 'AIRTEL',
-      preferredProvider: 'AIRTEL_MALAWI',
+      preferredRail: 'PAWAPAY',
+      preferredProvider: 'AIRTEL_MWI',
     },
   },
   {
@@ -231,7 +231,7 @@ export const paymentEndpoints: Endpoint[] = [
     bodyParams: [
       { name: 'msisdn', type: 'string', required: false, description: 'Payer mobile number. Auto-detects rail from prefix.', example: '265881234567' },
       { name: 'payerSessionToken', type: 'string', required: false, description: 'Authenticated payer session token (uses saved MSISDN)', example: 'eyJhbGc...' },
-      { name: 'providerCode', type: 'string', required: false, description: 'Override provider code', example: 'TNM_MALAWI' },
+      { name: 'providerCode', type: 'string', required: false, description: 'Override provider code', example: 'TNM_MWI', options: ['AIRTEL_MWI', 'TNM_MWI'] },
     ],
     responseExample: {
       transactionId: 'txn_01de45ef',

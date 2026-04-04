@@ -48,6 +48,8 @@ export class LinksController {
         dto.maxCycles ?? null,
         dto.expiresAt ? new Date(dto.expiresAt) : null,
         dto.metadata ?? null,
+        dto.recipientMsisdn ?? null,
+        dto.providerCode ?? null,
       ),
     );
   }

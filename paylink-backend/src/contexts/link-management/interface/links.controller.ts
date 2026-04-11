@@ -6,7 +6,6 @@ import {
   Param,
   Post,
   Query,
-  Req,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
@@ -20,6 +19,7 @@ import { CreateLinkDto } from './dtos/create-link.dto';
 import { CreateLinkCommand } from '../application/commands/create-link.command';
 import { CancelLinkCommand } from '../application/commands/cancel-link.command';
 import { GetLinkQuery } from '../application/queries/get-link.query';
+import { ListLinksQuery } from '../application/queries/list-links.query';
 import { CurrentMerchant } from '@shared/decorators/current-merchant.decorator';
 
 @ApiTags('links')
@@ -30,6 +30,22 @@ export class LinksController {
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
   ) {}
+
+  @Get()
+  @ApiOperation({ summary: 'List payment links for the authenticated merchant' })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'status', required: false, type: String })
+  async list(
+    @CurrentMerchant() merchantId: string,
+    @Query('page') page = '1',
+    @Query('limit') limit = '10',
+    @Query('status') status?: string,
+  ) {
+    return this.queryBus.execute(
+      new ListLinksQuery(merchantId, Number(page), Number(limit), status),
+    );
+  }
 
   @Post()
   @ApiOperation({ summary: 'Create a payment link' })

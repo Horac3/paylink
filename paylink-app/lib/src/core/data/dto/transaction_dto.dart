@@ -22,12 +22,27 @@ class TransactionDto with _$TransactionDto {
 @freezed
 class InitiatePaymentRequestDto with _$InitiatePaymentRequestDto {
   const factory InitiatePaymentRequestDto({
-    required String linkSlug,
-    required String payerSessionToken,
-    String? amount,
+    // Strategy A — registered payer session
+    String? payerSessionToken,
+    // Strategy B — pre-filled recipient token
+    String? recipientToken,
+    // Strategy C — guest MSISDN
+    String? msisdn,
+    String? providerCode,
   }) = _InitiatePaymentRequestDto;
   factory InitiatePaymentRequestDto.fromJson(Map<String, dynamic> json) =>
       _$InitiatePaymentRequestDtoFromJson(json);
+}
+
+@freezed
+class PaymentStatusDto with _$PaymentStatusDto {
+  const factory PaymentStatusDto({
+    required String transactionId,
+    required String status,
+    String? externalRef,
+  }) = _PaymentStatusDto;
+  factory PaymentStatusDto.fromJson(Map<String, dynamic> json) =>
+      _$PaymentStatusDtoFromJson(json);
 }
 
 @freezed

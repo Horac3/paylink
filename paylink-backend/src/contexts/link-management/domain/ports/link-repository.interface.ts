@@ -7,6 +7,7 @@ export interface ILinkRepository {
     merchantId: string,
     page: number,
     limit: number,
+    status?: string,
   ): Promise<{ items: PaymentLink[]; total: number }>;
   save(link: PaymentLink): Promise<void>;
 }

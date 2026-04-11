@@ -1,7 +1,7 @@
 export type Provider = 'TNM' | 'AIRTEL' | 'UNKNOWN';
 
-const TNM_PREFIXES = ['088', '089'];
-const AIRTEL_PREFIXES = ['099', '098', '077'];
+const TNM_PREFIXES = ['088', '089', '099'];
+const AIRTEL_PREFIXES = ['098', '097', '075', '076', '077', '078'];
 
 export function detectProvider(phone: string): Provider {
   const digits = phone.replace(/\D/g, '');

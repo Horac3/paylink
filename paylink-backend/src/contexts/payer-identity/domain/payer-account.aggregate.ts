@@ -88,7 +88,7 @@ export class PayerAccount {
     const account = new PayerAccount({
       ...props,
       preferredRail: 'PAWAPAY',
-      preferredProvider: 'AIRTEL_MALAWI',
+      preferredProvider: 'AIRTEL_MWI',
       verified: false,
       fcmToken: null,
     });

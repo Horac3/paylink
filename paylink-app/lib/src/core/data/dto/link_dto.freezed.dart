@@ -22,14 +22,14 @@ PaymentLinkDto _$PaymentLinkDtoFromJson(Map<String, dynamic> json) {
 mixin _$PaymentLinkDto {
   String get id => throw _privateConstructorUsedError;
   String get slug => throw _privateConstructorUsedError;
-  String get title => throw _privateConstructorUsedError;
   String get type => throw _privateConstructorUsedError;
+  String get status => throw _privateConstructorUsedError;
   String? get amount => throw _privateConstructorUsedError;
   String get currency => throw _privateConstructorUsedError;
-  String get status => throw _privateConstructorUsedError;
-  String get createdAt => throw _privateConstructorUsedError;
-  int? get useCount => throw _privateConstructorUsedError;
-  int? get maxUses => throw _privateConstructorUsedError;
+  String? get description => throw _privateConstructorUsedError;
+  String? get expiresAt => throw _privateConstructorUsedError;
+  String? get createdAt => throw _privateConstructorUsedError;
+  Map<String, dynamic>? get metadata => throw _privateConstructorUsedError;
 
   /// Serializes this PaymentLinkDto to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -50,14 +50,14 @@ abstract class $PaymentLinkDtoCopyWith<$Res> {
   $Res call(
       {String id,
       String slug,
-      String title,
       String type,
+      String status,
       String? amount,
       String currency,
-      String status,
-      String createdAt,
-      int? useCount,
-      int? maxUses});
+      String? description,
+      String? expiresAt,
+      String? createdAt,
+      Map<String, dynamic>? metadata});
 }
 
 /// @nodoc
@@ -77,14 +77,14 @@ class _$PaymentLinkDtoCopyWithImpl<$Res, $Val extends PaymentLinkDto>
   $Res call({
     Object? id = null,
     Object? slug = null,
-    Object? title = null,
     Object? type = null,
+    Object? status = null,
     Object? amount = freezed,
     Object? currency = null,
-    Object? status = null,
-    Object? createdAt = null,
-    Object? useCount = freezed,
-    Object? maxUses = freezed,
+    Object? description = freezed,
+    Object? expiresAt = freezed,
+    Object? createdAt = freezed,
+    Object? metadata = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -95,13 +95,13 @@ class _$PaymentLinkDtoCopyWithImpl<$Res, $Val extends PaymentLinkDto>
           ? _value.slug
           : slug // ignore: cast_nullable_to_non_nullable
               as String,
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
       type: null == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
+              as String,
+      status: null == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
               as String,
       amount: freezed == amount
           ? _value.amount
@@ -111,22 +111,22 @@ class _$PaymentLinkDtoCopyWithImpl<$Res, $Val extends PaymentLinkDto>
           ? _value.currency
           : currency // ignore: cast_nullable_to_non_nullable
               as String,
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as String,
-      createdAt: null == createdAt
+      description: freezed == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String?,
+      expiresAt: freezed == expiresAt
+          ? _value.expiresAt
+          : expiresAt // ignore: cast_nullable_to_non_nullable
+              as String?,
+      createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
-              as String,
-      useCount: freezed == useCount
-          ? _value.useCount
-          : useCount // ignore: cast_nullable_to_non_nullable
-              as int?,
-      maxUses: freezed == maxUses
-          ? _value.maxUses
-          : maxUses // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as String?,
+      metadata: freezed == metadata
+          ? _value.metadata
+          : metadata // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>?,
     ) as $Val);
   }
 }
@@ -142,14 +142,14 @@ abstract class _$$PaymentLinkDtoImplCopyWith<$Res>
   $Res call(
       {String id,
       String slug,
-      String title,
       String type,
+      String status,
       String? amount,
       String currency,
-      String status,
-      String createdAt,
-      int? useCount,
-      int? maxUses});
+      String? description,
+      String? expiresAt,
+      String? createdAt,
+      Map<String, dynamic>? metadata});
 }
 
 /// @nodoc
@@ -167,14 +167,14 @@ class __$$PaymentLinkDtoImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? slug = null,
-    Object? title = null,
     Object? type = null,
+    Object? status = null,
     Object? amount = freezed,
     Object? currency = null,
-    Object? status = null,
-    Object? createdAt = null,
-    Object? useCount = freezed,
-    Object? maxUses = freezed,
+    Object? description = freezed,
+    Object? expiresAt = freezed,
+    Object? createdAt = freezed,
+    Object? metadata = freezed,
   }) {
     return _then(_$PaymentLinkDtoImpl(
       id: null == id
@@ -185,13 +185,13 @@ class __$$PaymentLinkDtoImplCopyWithImpl<$Res>
           ? _value.slug
           : slug // ignore: cast_nullable_to_non_nullable
               as String,
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
       type: null == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
+              as String,
+      status: null == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
               as String,
       amount: freezed == amount
           ? _value.amount
@@ -201,22 +201,22 @@ class __$$PaymentLinkDtoImplCopyWithImpl<$Res>
           ? _value.currency
           : currency // ignore: cast_nullable_to_non_nullable
               as String,
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as String,
-      createdAt: null == createdAt
+      description: freezed == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String?,
+      expiresAt: freezed == expiresAt
+          ? _value.expiresAt
+          : expiresAt // ignore: cast_nullable_to_non_nullable
+              as String?,
+      createdAt: freezed == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
-              as String,
-      useCount: freezed == useCount
-          ? _value.useCount
-          : useCount // ignore: cast_nullable_to_non_nullable
-              as int?,
-      maxUses: freezed == maxUses
-          ? _value.maxUses
-          : maxUses // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as String?,
+      metadata: freezed == metadata
+          ? _value._metadata
+          : metadata // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>?,
     ));
   }
 }
@@ -227,14 +227,15 @@ class _$PaymentLinkDtoImpl implements _PaymentLinkDto {
   const _$PaymentLinkDtoImpl(
       {required this.id,
       required this.slug,
-      required this.title,
       required this.type,
+      required this.status,
       this.amount,
       required this.currency,
-      required this.status,
-      required this.createdAt,
-      this.useCount,
-      this.maxUses});
+      this.description,
+      this.expiresAt,
+      this.createdAt,
+      final Map<String, dynamic>? metadata})
+      : _metadata = metadata;
 
   factory _$PaymentLinkDtoImpl.fromJson(Map<String, dynamic> json) =>
       _$$PaymentLinkDtoImplFromJson(json);
@@ -244,25 +245,32 @@ class _$PaymentLinkDtoImpl implements _PaymentLinkDto {
   @override
   final String slug;
   @override
-  final String title;
-  @override
   final String type;
+  @override
+  final String status;
   @override
   final String? amount;
   @override
   final String currency;
   @override
-  final String status;
+  final String? description;
   @override
-  final String createdAt;
+  final String? expiresAt;
   @override
-  final int? useCount;
+  final String? createdAt;
+  final Map<String, dynamic>? _metadata;
   @override
-  final int? maxUses;
+  Map<String, dynamic>? get metadata {
+    final value = _metadata;
+    if (value == null) return null;
+    if (_metadata is EqualUnmodifiableMapView) return _metadata;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(value);
+  }
 
   @override
   String toString() {
-    return 'PaymentLinkDto(id: $id, slug: $slug, title: $title, type: $type, amount: $amount, currency: $currency, status: $status, createdAt: $createdAt, useCount: $useCount, maxUses: $maxUses)';
+    return 'PaymentLinkDto(id: $id, slug: $slug, type: $type, status: $status, amount: $amount, currency: $currency, description: $description, expiresAt: $expiresAt, createdAt: $createdAt, metadata: $metadata)';
   }
 
   @override
@@ -272,23 +280,34 @@ class _$PaymentLinkDtoImpl implements _PaymentLinkDto {
             other is _$PaymentLinkDtoImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.slug, slug) || other.slug == slug) &&
-            (identical(other.title, title) || other.title == title) &&
             (identical(other.type, type) || other.type == type) &&
+            (identical(other.status, status) || other.status == status) &&
             (identical(other.amount, amount) || other.amount == amount) &&
             (identical(other.currency, currency) ||
                 other.currency == currency) &&
-            (identical(other.status, status) || other.status == status) &&
+            (identical(other.description, description) ||
+                other.description == description) &&
+            (identical(other.expiresAt, expiresAt) ||
+                other.expiresAt == expiresAt) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
-            (identical(other.useCount, useCount) ||
-                other.useCount == useCount) &&
-            (identical(other.maxUses, maxUses) || other.maxUses == maxUses));
+            const DeepCollectionEquality().equals(other._metadata, _metadata));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, slug, title, type, amount,
-      currency, status, createdAt, useCount, maxUses);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      slug,
+      type,
+      status,
+      amount,
+      currency,
+      description,
+      expiresAt,
+      createdAt,
+      const DeepCollectionEquality().hash(_metadata));
 
   /// Create a copy of PaymentLinkDto
   /// with the given fields replaced by the non-null parameter values.
@@ -311,14 +330,14 @@ abstract class _PaymentLinkDto implements PaymentLinkDto {
   const factory _PaymentLinkDto(
       {required final String id,
       required final String slug,
-      required final String title,
       required final String type,
+      required final String status,
       final String? amount,
       required final String currency,
-      required final String status,
-      required final String createdAt,
-      final int? useCount,
-      final int? maxUses}) = _$PaymentLinkDtoImpl;
+      final String? description,
+      final String? expiresAt,
+      final String? createdAt,
+      final Map<String, dynamic>? metadata}) = _$PaymentLinkDtoImpl;
 
   factory _PaymentLinkDto.fromJson(Map<String, dynamic> json) =
       _$PaymentLinkDtoImpl.fromJson;
@@ -328,21 +347,21 @@ abstract class _PaymentLinkDto implements PaymentLinkDto {
   @override
   String get slug;
   @override
-  String get title;
-  @override
   String get type;
+  @override
+  String get status;
   @override
   String? get amount;
   @override
   String get currency;
   @override
-  String get status;
+  String? get description;
   @override
-  String get createdAt;
+  String? get expiresAt;
   @override
-  int? get useCount;
+  String? get createdAt;
   @override
-  int? get maxUses;
+  Map<String, dynamic>? get metadata;
 
   /// Create a copy of PaymentLinkDto
   /// with the given fields replaced by the non-null parameter values.
@@ -358,12 +377,16 @@ CreateLinkRequestDto _$CreateLinkRequestDtoFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$CreateLinkRequestDto {
-  String get title => throw _privateConstructorUsedError;
   String get type => throw _privateConstructorUsedError;
   String? get amount => throw _privateConstructorUsedError;
   String get currency => throw _privateConstructorUsedError;
   String? get description => throw _privateConstructorUsedError;
-  int? get maxUses => throw _privateConstructorUsedError;
+  String? get expiresAt => throw _privateConstructorUsedError;
+  Map<String, dynamic>? get metadata => throw _privateConstructorUsedError;
+  String? get recipientMsisdn => throw _privateConstructorUsedError;
+  String? get providerCode => throw _privateConstructorUsedError;
+  String? get recurrenceInterval => throw _privateConstructorUsedError;
+  int? get maxCycles => throw _privateConstructorUsedError;
 
   /// Serializes this CreateLinkRequestDto to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -382,12 +405,16 @@ abstract class $CreateLinkRequestDtoCopyWith<$Res> {
       _$CreateLinkRequestDtoCopyWithImpl<$Res, CreateLinkRequestDto>;
   @useResult
   $Res call(
-      {String title,
-      String type,
+      {String type,
       String? amount,
       String currency,
       String? description,
-      int? maxUses});
+      String? expiresAt,
+      Map<String, dynamic>? metadata,
+      String? recipientMsisdn,
+      String? providerCode,
+      String? recurrenceInterval,
+      int? maxCycles});
 }
 
 /// @nodoc
@@ -406,18 +433,18 @@ class _$CreateLinkRequestDtoCopyWithImpl<$Res,
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? title = null,
     Object? type = null,
     Object? amount = freezed,
     Object? currency = null,
     Object? description = freezed,
-    Object? maxUses = freezed,
+    Object? expiresAt = freezed,
+    Object? metadata = freezed,
+    Object? recipientMsisdn = freezed,
+    Object? providerCode = freezed,
+    Object? recurrenceInterval = freezed,
+    Object? maxCycles = freezed,
   }) {
     return _then(_value.copyWith(
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
       type: null == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
@@ -434,9 +461,29 @@ class _$CreateLinkRequestDtoCopyWithImpl<$Res,
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String?,
-      maxUses: freezed == maxUses
-          ? _value.maxUses
-          : maxUses // ignore: cast_nullable_to_non_nullable
+      expiresAt: freezed == expiresAt
+          ? _value.expiresAt
+          : expiresAt // ignore: cast_nullable_to_non_nullable
+              as String?,
+      metadata: freezed == metadata
+          ? _value.metadata
+          : metadata // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>?,
+      recipientMsisdn: freezed == recipientMsisdn
+          ? _value.recipientMsisdn
+          : recipientMsisdn // ignore: cast_nullable_to_non_nullable
+              as String?,
+      providerCode: freezed == providerCode
+          ? _value.providerCode
+          : providerCode // ignore: cast_nullable_to_non_nullable
+              as String?,
+      recurrenceInterval: freezed == recurrenceInterval
+          ? _value.recurrenceInterval
+          : recurrenceInterval // ignore: cast_nullable_to_non_nullable
+              as String?,
+      maxCycles: freezed == maxCycles
+          ? _value.maxCycles
+          : maxCycles // ignore: cast_nullable_to_non_nullable
               as int?,
     ) as $Val);
   }
@@ -451,12 +498,16 @@ abstract class _$$CreateLinkRequestDtoImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String title,
-      String type,
+      {String type,
       String? amount,
       String currency,
       String? description,
-      int? maxUses});
+      String? expiresAt,
+      Map<String, dynamic>? metadata,
+      String? recipientMsisdn,
+      String? providerCode,
+      String? recurrenceInterval,
+      int? maxCycles});
 }
 
 /// @nodoc
@@ -472,18 +523,18 @@ class __$$CreateLinkRequestDtoImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? title = null,
     Object? type = null,
     Object? amount = freezed,
     Object? currency = null,
     Object? description = freezed,
-    Object? maxUses = freezed,
+    Object? expiresAt = freezed,
+    Object? metadata = freezed,
+    Object? recipientMsisdn = freezed,
+    Object? providerCode = freezed,
+    Object? recurrenceInterval = freezed,
+    Object? maxCycles = freezed,
   }) {
     return _then(_$CreateLinkRequestDtoImpl(
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
       type: null == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
@@ -500,9 +551,29 @@ class __$$CreateLinkRequestDtoImplCopyWithImpl<$Res>
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String?,
-      maxUses: freezed == maxUses
-          ? _value.maxUses
-          : maxUses // ignore: cast_nullable_to_non_nullable
+      expiresAt: freezed == expiresAt
+          ? _value.expiresAt
+          : expiresAt // ignore: cast_nullable_to_non_nullable
+              as String?,
+      metadata: freezed == metadata
+          ? _value._metadata
+          : metadata // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>?,
+      recipientMsisdn: freezed == recipientMsisdn
+          ? _value.recipientMsisdn
+          : recipientMsisdn // ignore: cast_nullable_to_non_nullable
+              as String?,
+      providerCode: freezed == providerCode
+          ? _value.providerCode
+          : providerCode // ignore: cast_nullable_to_non_nullable
+              as String?,
+      recurrenceInterval: freezed == recurrenceInterval
+          ? _value.recurrenceInterval
+          : recurrenceInterval // ignore: cast_nullable_to_non_nullable
+              as String?,
+      maxCycles: freezed == maxCycles
+          ? _value.maxCycles
+          : maxCycles // ignore: cast_nullable_to_non_nullable
               as int?,
     ));
   }
@@ -512,18 +583,21 @@ class __$$CreateLinkRequestDtoImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$CreateLinkRequestDtoImpl implements _CreateLinkRequestDto {
   const _$CreateLinkRequestDtoImpl(
-      {required this.title,
-      required this.type,
+      {required this.type,
       this.amount,
       required this.currency,
       this.description,
-      this.maxUses});
+      this.expiresAt,
+      final Map<String, dynamic>? metadata,
+      this.recipientMsisdn,
+      this.providerCode,
+      this.recurrenceInterval,
+      this.maxCycles})
+      : _metadata = metadata;
 
   factory _$CreateLinkRequestDtoImpl.fromJson(Map<String, dynamic> json) =>
       _$$CreateLinkRequestDtoImplFromJson(json);
 
-  @override
-  final String title;
   @override
   final String type;
   @override
@@ -533,11 +607,29 @@ class _$CreateLinkRequestDtoImpl implements _CreateLinkRequestDto {
   @override
   final String? description;
   @override
-  final int? maxUses;
+  final String? expiresAt;
+  final Map<String, dynamic>? _metadata;
+  @override
+  Map<String, dynamic>? get metadata {
+    final value = _metadata;
+    if (value == null) return null;
+    if (_metadata is EqualUnmodifiableMapView) return _metadata;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(value);
+  }
+
+  @override
+  final String? recipientMsisdn;
+  @override
+  final String? providerCode;
+  @override
+  final String? recurrenceInterval;
+  @override
+  final int? maxCycles;
 
   @override
   String toString() {
-    return 'CreateLinkRequestDto(title: $title, type: $type, amount: $amount, currency: $currency, description: $description, maxUses: $maxUses)';
+    return 'CreateLinkRequestDto(type: $type, amount: $amount, currency: $currency, description: $description, expiresAt: $expiresAt, metadata: $metadata, recipientMsisdn: $recipientMsisdn, providerCode: $providerCode, recurrenceInterval: $recurrenceInterval, maxCycles: $maxCycles)';
   }
 
   @override
@@ -545,20 +637,39 @@ class _$CreateLinkRequestDtoImpl implements _CreateLinkRequestDto {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$CreateLinkRequestDtoImpl &&
-            (identical(other.title, title) || other.title == title) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.amount, amount) || other.amount == amount) &&
             (identical(other.currency, currency) ||
                 other.currency == currency) &&
             (identical(other.description, description) ||
                 other.description == description) &&
-            (identical(other.maxUses, maxUses) || other.maxUses == maxUses));
+            (identical(other.expiresAt, expiresAt) ||
+                other.expiresAt == expiresAt) &&
+            const DeepCollectionEquality().equals(other._metadata, _metadata) &&
+            (identical(other.recipientMsisdn, recipientMsisdn) ||
+                other.recipientMsisdn == recipientMsisdn) &&
+            (identical(other.providerCode, providerCode) ||
+                other.providerCode == providerCode) &&
+            (identical(other.recurrenceInterval, recurrenceInterval) ||
+                other.recurrenceInterval == recurrenceInterval) &&
+            (identical(other.maxCycles, maxCycles) ||
+                other.maxCycles == maxCycles));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
-      runtimeType, title, type, amount, currency, description, maxUses);
+      runtimeType,
+      type,
+      amount,
+      currency,
+      description,
+      expiresAt,
+      const DeepCollectionEquality().hash(_metadata),
+      recipientMsisdn,
+      providerCode,
+      recurrenceInterval,
+      maxCycles);
 
   /// Create a copy of CreateLinkRequestDto
   /// with the given fields replaced by the non-null parameter values.
@@ -580,18 +691,20 @@ class _$CreateLinkRequestDtoImpl implements _CreateLinkRequestDto {
 
 abstract class _CreateLinkRequestDto implements CreateLinkRequestDto {
   const factory _CreateLinkRequestDto(
-      {required final String title,
-      required final String type,
+      {required final String type,
       final String? amount,
       required final String currency,
       final String? description,
-      final int? maxUses}) = _$CreateLinkRequestDtoImpl;
+      final String? expiresAt,
+      final Map<String, dynamic>? metadata,
+      final String? recipientMsisdn,
+      final String? providerCode,
+      final String? recurrenceInterval,
+      final int? maxCycles}) = _$CreateLinkRequestDtoImpl;
 
   factory _CreateLinkRequestDto.fromJson(Map<String, dynamic> json) =
       _$CreateLinkRequestDtoImpl.fromJson;
 
-  @override
-  String get title;
   @override
   String get type;
   @override
@@ -601,7 +714,17 @@ abstract class _CreateLinkRequestDto implements CreateLinkRequestDto {
   @override
   String? get description;
   @override
-  int? get maxUses;
+  String? get expiresAt;
+  @override
+  Map<String, dynamic>? get metadata;
+  @override
+  String? get recipientMsisdn;
+  @override
+  String? get providerCode;
+  @override
+  String? get recurrenceInterval;
+  @override
+  int? get maxCycles;
 
   /// Create a copy of CreateLinkRequestDto
   /// with the given fields replaced by the non-null parameter values.
@@ -795,16 +918,15 @@ LinkDetailDto _$LinkDetailDtoFromJson(Map<String, dynamic> json) {
 mixin _$LinkDetailDto {
   String get id => throw _privateConstructorUsedError;
   String get slug => throw _privateConstructorUsedError;
-  String get title => throw _privateConstructorUsedError;
   String get type => throw _privateConstructorUsedError;
+  String get status => throw _privateConstructorUsedError;
   String? get amount => throw _privateConstructorUsedError;
   String get currency => throw _privateConstructorUsedError;
-  String get status => throw _privateConstructorUsedError;
-  String get createdAt => throw _privateConstructorUsedError;
-  int? get useCount => throw _privateConstructorUsedError;
-  int? get maxUses => throw _privateConstructorUsedError;
   String? get description => throw _privateConstructorUsedError;
-  String? get deepLink => throw _privateConstructorUsedError;
+  String? get expiresAt => throw _privateConstructorUsedError;
+  String? get createdAt => throw _privateConstructorUsedError;
+  String? get qrCodeBase64 => throw _privateConstructorUsedError;
+  Map<String, dynamic>? get metadata => throw _privateConstructorUsedError;
 
   /// Serializes this LinkDetailDto to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -825,16 +947,15 @@ abstract class $LinkDetailDtoCopyWith<$Res> {
   $Res call(
       {String id,
       String slug,
-      String title,
       String type,
+      String status,
       String? amount,
       String currency,
-      String status,
-      String createdAt,
-      int? useCount,
-      int? maxUses,
       String? description,
-      String? deepLink});
+      String? expiresAt,
+      String? createdAt,
+      String? qrCodeBase64,
+      Map<String, dynamic>? metadata});
 }
 
 /// @nodoc
@@ -854,16 +975,15 @@ class _$LinkDetailDtoCopyWithImpl<$Res, $Val extends LinkDetailDto>
   $Res call({
     Object? id = null,
     Object? slug = null,
-    Object? title = null,
     Object? type = null,
+    Object? status = null,
     Object? amount = freezed,
     Object? currency = null,
-    Object? status = null,
-    Object? createdAt = null,
-    Object? useCount = freezed,
-    Object? maxUses = freezed,
     Object? description = freezed,
-    Object? deepLink = freezed,
+    Object? expiresAt = freezed,
+    Object? createdAt = freezed,
+    Object? qrCodeBase64 = freezed,
+    Object? metadata = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -874,13 +994,13 @@ class _$LinkDetailDtoCopyWithImpl<$Res, $Val extends LinkDetailDto>
           ? _value.slug
           : slug // ignore: cast_nullable_to_non_nullable
               as String,
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
       type: null == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
+              as String,
+      status: null == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
               as String,
       amount: freezed == amount
           ? _value.amount
@@ -890,30 +1010,26 @@ class _$LinkDetailDtoCopyWithImpl<$Res, $Val extends LinkDetailDto>
           ? _value.currency
           : currency // ignore: cast_nullable_to_non_nullable
               as String,
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as String,
-      createdAt: null == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as String,
-      useCount: freezed == useCount
-          ? _value.useCount
-          : useCount // ignore: cast_nullable_to_non_nullable
-              as int?,
-      maxUses: freezed == maxUses
-          ? _value.maxUses
-          : maxUses // ignore: cast_nullable_to_non_nullable
-              as int?,
       description: freezed == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String?,
-      deepLink: freezed == deepLink
-          ? _value.deepLink
-          : deepLink // ignore: cast_nullable_to_non_nullable
+      expiresAt: freezed == expiresAt
+          ? _value.expiresAt
+          : expiresAt // ignore: cast_nullable_to_non_nullable
               as String?,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as String?,
+      qrCodeBase64: freezed == qrCodeBase64
+          ? _value.qrCodeBase64
+          : qrCodeBase64 // ignore: cast_nullable_to_non_nullable
+              as String?,
+      metadata: freezed == metadata
+          ? _value.metadata
+          : metadata // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>?,
     ) as $Val);
   }
 }
@@ -929,16 +1045,15 @@ abstract class _$$LinkDetailDtoImplCopyWith<$Res>
   $Res call(
       {String id,
       String slug,
-      String title,
       String type,
+      String status,
       String? amount,
       String currency,
-      String status,
-      String createdAt,
-      int? useCount,
-      int? maxUses,
       String? description,
-      String? deepLink});
+      String? expiresAt,
+      String? createdAt,
+      String? qrCodeBase64,
+      Map<String, dynamic>? metadata});
 }
 
 /// @nodoc
@@ -956,16 +1071,15 @@ class __$$LinkDetailDtoImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? slug = null,
-    Object? title = null,
     Object? type = null,
+    Object? status = null,
     Object? amount = freezed,
     Object? currency = null,
-    Object? status = null,
-    Object? createdAt = null,
-    Object? useCount = freezed,
-    Object? maxUses = freezed,
     Object? description = freezed,
-    Object? deepLink = freezed,
+    Object? expiresAt = freezed,
+    Object? createdAt = freezed,
+    Object? qrCodeBase64 = freezed,
+    Object? metadata = freezed,
   }) {
     return _then(_$LinkDetailDtoImpl(
       id: null == id
@@ -976,13 +1090,13 @@ class __$$LinkDetailDtoImplCopyWithImpl<$Res>
           ? _value.slug
           : slug // ignore: cast_nullable_to_non_nullable
               as String,
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
       type: null == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
+              as String,
+      status: null == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
               as String,
       amount: freezed == amount
           ? _value.amount
@@ -992,30 +1106,26 @@ class __$$LinkDetailDtoImplCopyWithImpl<$Res>
           ? _value.currency
           : currency // ignore: cast_nullable_to_non_nullable
               as String,
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as String,
-      createdAt: null == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
-              as String,
-      useCount: freezed == useCount
-          ? _value.useCount
-          : useCount // ignore: cast_nullable_to_non_nullable
-              as int?,
-      maxUses: freezed == maxUses
-          ? _value.maxUses
-          : maxUses // ignore: cast_nullable_to_non_nullable
-              as int?,
       description: freezed == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String?,
-      deepLink: freezed == deepLink
-          ? _value.deepLink
-          : deepLink // ignore: cast_nullable_to_non_nullable
+      expiresAt: freezed == expiresAt
+          ? _value.expiresAt
+          : expiresAt // ignore: cast_nullable_to_non_nullable
               as String?,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as String?,
+      qrCodeBase64: freezed == qrCodeBase64
+          ? _value.qrCodeBase64
+          : qrCodeBase64 // ignore: cast_nullable_to_non_nullable
+              as String?,
+      metadata: freezed == metadata
+          ? _value._metadata
+          : metadata // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>?,
     ));
   }
 }
@@ -1026,16 +1136,16 @@ class _$LinkDetailDtoImpl implements _LinkDetailDto {
   const _$LinkDetailDtoImpl(
       {required this.id,
       required this.slug,
-      required this.title,
       required this.type,
+      required this.status,
       this.amount,
       required this.currency,
-      required this.status,
-      required this.createdAt,
-      this.useCount,
-      this.maxUses,
       this.description,
-      this.deepLink});
+      this.expiresAt,
+      this.createdAt,
+      this.qrCodeBase64,
+      final Map<String, dynamic>? metadata})
+      : _metadata = metadata;
 
   factory _$LinkDetailDtoImpl.fromJson(Map<String, dynamic> json) =>
       _$$LinkDetailDtoImplFromJson(json);
@@ -1045,29 +1155,34 @@ class _$LinkDetailDtoImpl implements _LinkDetailDto {
   @override
   final String slug;
   @override
-  final String title;
-  @override
   final String type;
+  @override
+  final String status;
   @override
   final String? amount;
   @override
   final String currency;
   @override
-  final String status;
-  @override
-  final String createdAt;
-  @override
-  final int? useCount;
-  @override
-  final int? maxUses;
-  @override
   final String? description;
   @override
-  final String? deepLink;
+  final String? expiresAt;
+  @override
+  final String? createdAt;
+  @override
+  final String? qrCodeBase64;
+  final Map<String, dynamic>? _metadata;
+  @override
+  Map<String, dynamic>? get metadata {
+    final value = _metadata;
+    if (value == null) return null;
+    if (_metadata is EqualUnmodifiableMapView) return _metadata;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(value);
+  }
 
   @override
   String toString() {
-    return 'LinkDetailDto(id: $id, slug: $slug, title: $title, type: $type, amount: $amount, currency: $currency, status: $status, createdAt: $createdAt, useCount: $useCount, maxUses: $maxUses, description: $description, deepLink: $deepLink)';
+    return 'LinkDetailDto(id: $id, slug: $slug, type: $type, status: $status, amount: $amount, currency: $currency, description: $description, expiresAt: $expiresAt, createdAt: $createdAt, qrCodeBase64: $qrCodeBase64, metadata: $metadata)';
   }
 
   @override
@@ -1077,27 +1192,37 @@ class _$LinkDetailDtoImpl implements _LinkDetailDto {
             other is _$LinkDetailDtoImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.slug, slug) || other.slug == slug) &&
-            (identical(other.title, title) || other.title == title) &&
             (identical(other.type, type) || other.type == type) &&
+            (identical(other.status, status) || other.status == status) &&
             (identical(other.amount, amount) || other.amount == amount) &&
             (identical(other.currency, currency) ||
                 other.currency == currency) &&
-            (identical(other.status, status) || other.status == status) &&
-            (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt) &&
-            (identical(other.useCount, useCount) ||
-                other.useCount == useCount) &&
-            (identical(other.maxUses, maxUses) || other.maxUses == maxUses) &&
             (identical(other.description, description) ||
                 other.description == description) &&
-            (identical(other.deepLink, deepLink) ||
-                other.deepLink == deepLink));
+            (identical(other.expiresAt, expiresAt) ||
+                other.expiresAt == expiresAt) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.qrCodeBase64, qrCodeBase64) ||
+                other.qrCodeBase64 == qrCodeBase64) &&
+            const DeepCollectionEquality().equals(other._metadata, _metadata));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, slug, title, type, amount,
-      currency, status, createdAt, useCount, maxUses, description, deepLink);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      slug,
+      type,
+      status,
+      amount,
+      currency,
+      description,
+      expiresAt,
+      createdAt,
+      qrCodeBase64,
+      const DeepCollectionEquality().hash(_metadata));
 
   /// Create a copy of LinkDetailDto
   /// with the given fields replaced by the non-null parameter values.
@@ -1119,16 +1244,15 @@ abstract class _LinkDetailDto implements LinkDetailDto {
   const factory _LinkDetailDto(
       {required final String id,
       required final String slug,
-      required final String title,
       required final String type,
+      required final String status,
       final String? amount,
       required final String currency,
-      required final String status,
-      required final String createdAt,
-      final int? useCount,
-      final int? maxUses,
       final String? description,
-      final String? deepLink}) = _$LinkDetailDtoImpl;
+      final String? expiresAt,
+      final String? createdAt,
+      final String? qrCodeBase64,
+      final Map<String, dynamic>? metadata}) = _$LinkDetailDtoImpl;
 
   factory _LinkDetailDto.fromJson(Map<String, dynamic> json) =
       _$LinkDetailDtoImpl.fromJson;
@@ -1138,25 +1262,23 @@ abstract class _LinkDetailDto implements LinkDetailDto {
   @override
   String get slug;
   @override
-  String get title;
-  @override
   String get type;
+  @override
+  String get status;
   @override
   String? get amount;
   @override
   String get currency;
   @override
-  String get status;
-  @override
-  String get createdAt;
-  @override
-  int? get useCount;
-  @override
-  int? get maxUses;
-  @override
   String? get description;
   @override
-  String? get deepLink;
+  String? get expiresAt;
+  @override
+  String? get createdAt;
+  @override
+  String? get qrCodeBase64;
+  @override
+  Map<String, dynamic>? get metadata;
 
   /// Create a copy of LinkDetailDto
   /// with the given fields replaced by the non-null parameter values.

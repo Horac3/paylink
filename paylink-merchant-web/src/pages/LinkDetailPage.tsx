@@ -101,10 +101,10 @@ export function LinkDetailPage() {
             <p className="text-xs text-text-secondary mb-1">Standard URL</p>
             <div className="flex items-center gap-2 rounded-lg bg-gray-50 border border-border px-3 py-2">
               <span className="flex-1 truncate text-sm font-mono text-text-primary">
-                {link.standardUrl}
+                {link.url}
               </span>
-              <CopyButton text={link.standardUrl} />
-              <a href={link.standardUrl} target="_blank" rel="noreferrer" className="text-text-secondary hover:text-text-primary">
+              <CopyButton text={link.url} />
+              <a href={link.url} target="_blank" rel="noreferrer" className="text-text-secondary hover:text-text-primary">
                 <ExternalLink size={14} />
               </a>
             </div>

@@ -333,6 +333,212 @@ abstract class _SubscriptionDto implements SubscriptionDto {
       throw _privateConstructorUsedError;
 }
 
+PagedMetaDto _$PagedMetaDtoFromJson(Map<String, dynamic> json) {
+  return _PagedMetaDto.fromJson(json);
+}
+
+/// @nodoc
+mixin _$PagedMetaDto {
+  int get page => throw _privateConstructorUsedError;
+  int get limit => throw _privateConstructorUsedError;
+  int get total => throw _privateConstructorUsedError;
+  int get totalPages => throw _privateConstructorUsedError;
+
+  /// Serializes this PagedMetaDto to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of PagedMetaDto
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $PagedMetaDtoCopyWith<PagedMetaDto> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $PagedMetaDtoCopyWith<$Res> {
+  factory $PagedMetaDtoCopyWith(
+          PagedMetaDto value, $Res Function(PagedMetaDto) then) =
+      _$PagedMetaDtoCopyWithImpl<$Res, PagedMetaDto>;
+  @useResult
+  $Res call({int page, int limit, int total, int totalPages});
+}
+
+/// @nodoc
+class _$PagedMetaDtoCopyWithImpl<$Res, $Val extends PagedMetaDto>
+    implements $PagedMetaDtoCopyWith<$Res> {
+  _$PagedMetaDtoCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of PagedMetaDto
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? page = null,
+    Object? limit = null,
+    Object? total = null,
+    Object? totalPages = null,
+  }) {
+    return _then(_value.copyWith(
+      page: null == page
+          ? _value.page
+          : page // ignore: cast_nullable_to_non_nullable
+              as int,
+      limit: null == limit
+          ? _value.limit
+          : limit // ignore: cast_nullable_to_non_nullable
+              as int,
+      total: null == total
+          ? _value.total
+          : total // ignore: cast_nullable_to_non_nullable
+              as int,
+      totalPages: null == totalPages
+          ? _value.totalPages
+          : totalPages // ignore: cast_nullable_to_non_nullable
+              as int,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$PagedMetaDtoImplCopyWith<$Res>
+    implements $PagedMetaDtoCopyWith<$Res> {
+  factory _$$PagedMetaDtoImplCopyWith(
+          _$PagedMetaDtoImpl value, $Res Function(_$PagedMetaDtoImpl) then) =
+      __$$PagedMetaDtoImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({int page, int limit, int total, int totalPages});
+}
+
+/// @nodoc
+class __$$PagedMetaDtoImplCopyWithImpl<$Res>
+    extends _$PagedMetaDtoCopyWithImpl<$Res, _$PagedMetaDtoImpl>
+    implements _$$PagedMetaDtoImplCopyWith<$Res> {
+  __$$PagedMetaDtoImplCopyWithImpl(
+      _$PagedMetaDtoImpl _value, $Res Function(_$PagedMetaDtoImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of PagedMetaDto
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? page = null,
+    Object? limit = null,
+    Object? total = null,
+    Object? totalPages = null,
+  }) {
+    return _then(_$PagedMetaDtoImpl(
+      page: null == page
+          ? _value.page
+          : page // ignore: cast_nullable_to_non_nullable
+              as int,
+      limit: null == limit
+          ? _value.limit
+          : limit // ignore: cast_nullable_to_non_nullable
+              as int,
+      total: null == total
+          ? _value.total
+          : total // ignore: cast_nullable_to_non_nullable
+              as int,
+      totalPages: null == totalPages
+          ? _value.totalPages
+          : totalPages // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$PagedMetaDtoImpl implements _PagedMetaDto {
+  const _$PagedMetaDtoImpl(
+      {required this.page,
+      required this.limit,
+      required this.total,
+      required this.totalPages});
+
+  factory _$PagedMetaDtoImpl.fromJson(Map<String, dynamic> json) =>
+      _$$PagedMetaDtoImplFromJson(json);
+
+  @override
+  final int page;
+  @override
+  final int limit;
+  @override
+  final int total;
+  @override
+  final int totalPages;
+
+  @override
+  String toString() {
+    return 'PagedMetaDto(page: $page, limit: $limit, total: $total, totalPages: $totalPages)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$PagedMetaDtoImpl &&
+            (identical(other.page, page) || other.page == page) &&
+            (identical(other.limit, limit) || other.limit == limit) &&
+            (identical(other.total, total) || other.total == total) &&
+            (identical(other.totalPages, totalPages) ||
+                other.totalPages == totalPages));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, page, limit, total, totalPages);
+
+  /// Create a copy of PagedMetaDto
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$PagedMetaDtoImplCopyWith<_$PagedMetaDtoImpl> get copyWith =>
+      __$$PagedMetaDtoImplCopyWithImpl<_$PagedMetaDtoImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$PagedMetaDtoImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _PagedMetaDto implements PagedMetaDto {
+  const factory _PagedMetaDto(
+      {required final int page,
+      required final int limit,
+      required final int total,
+      required final int totalPages}) = _$PagedMetaDtoImpl;
+
+  factory _PagedMetaDto.fromJson(Map<String, dynamic> json) =
+      _$PagedMetaDtoImpl.fromJson;
+
+  @override
+  int get page;
+  @override
+  int get limit;
+  @override
+  int get total;
+  @override
+  int get totalPages;
+
+  /// Create a copy of PagedMetaDto
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$PagedMetaDtoImplCopyWith<_$PagedMetaDtoImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
 PagedResponseDto<T> _$PagedResponseDtoFromJson<T>(
     Map<String, dynamic> json, T Function(Object?) fromJsonT) {
   return _PagedResponseDto<T>.fromJson(json, fromJsonT);
@@ -340,11 +546,9 @@ PagedResponseDto<T> _$PagedResponseDtoFromJson<T>(
 
 /// @nodoc
 mixin _$PagedResponseDto<T> {
+  @JsonKey(name: 'data')
   List<T> get items => throw _privateConstructorUsedError;
-  int get total => throw _privateConstructorUsedError;
-  int get page => throw _privateConstructorUsedError;
-  int get limit => throw _privateConstructorUsedError;
-  bool get hasMore => throw _privateConstructorUsedError;
+  PagedMetaDto get meta => throw _privateConstructorUsedError;
 
   /// Serializes this PagedResponseDto to a JSON map.
   Map<String, dynamic> toJson(Object? Function(T) toJsonT) =>
@@ -363,7 +567,9 @@ abstract class $PagedResponseDtoCopyWith<T, $Res> {
           PagedResponseDto<T> value, $Res Function(PagedResponseDto<T>) then) =
       _$PagedResponseDtoCopyWithImpl<T, $Res, PagedResponseDto<T>>;
   @useResult
-  $Res call({List<T> items, int total, int page, int limit, bool hasMore});
+  $Res call({@JsonKey(name: 'data') List<T> items, PagedMetaDto meta});
+
+  $PagedMetaDtoCopyWith<$Res> get meta;
 }
 
 /// @nodoc
@@ -382,33 +588,28 @@ class _$PagedResponseDtoCopyWithImpl<T, $Res, $Val extends PagedResponseDto<T>>
   @override
   $Res call({
     Object? items = null,
-    Object? total = null,
-    Object? page = null,
-    Object? limit = null,
-    Object? hasMore = null,
+    Object? meta = null,
   }) {
     return _then(_value.copyWith(
       items: null == items
           ? _value.items
           : items // ignore: cast_nullable_to_non_nullable
               as List<T>,
-      total: null == total
-          ? _value.total
-          : total // ignore: cast_nullable_to_non_nullable
-              as int,
-      page: null == page
-          ? _value.page
-          : page // ignore: cast_nullable_to_non_nullable
-              as int,
-      limit: null == limit
-          ? _value.limit
-          : limit // ignore: cast_nullable_to_non_nullable
-              as int,
-      hasMore: null == hasMore
-          ? _value.hasMore
-          : hasMore // ignore: cast_nullable_to_non_nullable
-              as bool,
+      meta: null == meta
+          ? _value.meta
+          : meta // ignore: cast_nullable_to_non_nullable
+              as PagedMetaDto,
     ) as $Val);
+  }
+
+  /// Create a copy of PagedResponseDto
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $PagedMetaDtoCopyWith<$Res> get meta {
+    return $PagedMetaDtoCopyWith<$Res>(_value.meta, (value) {
+      return _then(_value.copyWith(meta: value) as $Val);
+    });
   }
 }
 
@@ -420,7 +621,10 @@ abstract class _$$PagedResponseDtoImplCopyWith<T, $Res>
       __$$PagedResponseDtoImplCopyWithImpl<T, $Res>;
   @override
   @useResult
-  $Res call({List<T> items, int total, int page, int limit, bool hasMore});
+  $Res call({@JsonKey(name: 'data') List<T> items, PagedMetaDto meta});
+
+  @override
+  $PagedMetaDtoCopyWith<$Res> get meta;
 }
 
 /// @nodoc
@@ -437,46 +641,28 @@ class __$$PagedResponseDtoImplCopyWithImpl<T, $Res>
   @override
   $Res call({
     Object? items = null,
-    Object? total = null,
-    Object? page = null,
-    Object? limit = null,
-    Object? hasMore = null,
+    Object? meta = null,
   }) {
     return _then(_$PagedResponseDtoImpl<T>(
       items: null == items
           ? _value._items
           : items // ignore: cast_nullable_to_non_nullable
               as List<T>,
-      total: null == total
-          ? _value.total
-          : total // ignore: cast_nullable_to_non_nullable
-              as int,
-      page: null == page
-          ? _value.page
-          : page // ignore: cast_nullable_to_non_nullable
-              as int,
-      limit: null == limit
-          ? _value.limit
-          : limit // ignore: cast_nullable_to_non_nullable
-              as int,
-      hasMore: null == hasMore
-          ? _value.hasMore
-          : hasMore // ignore: cast_nullable_to_non_nullable
-              as bool,
+      meta: null == meta
+          ? _value.meta
+          : meta // ignore: cast_nullable_to_non_nullable
+              as PagedMetaDto,
     ));
   }
 }
 
 /// @nodoc
 @JsonSerializable(genericArgumentFactories: true)
-class _$PagedResponseDtoImpl<T> implements _PagedResponseDto<T> {
+class _$PagedResponseDtoImpl<T> extends _PagedResponseDto<T> {
   const _$PagedResponseDtoImpl(
-      {required final List<T> items,
-      required this.total,
-      required this.page,
-      required this.limit,
-      required this.hasMore})
-      : _items = items;
+      {@JsonKey(name: 'data') required final List<T> items, required this.meta})
+      : _items = items,
+        super._();
 
   factory _$PagedResponseDtoImpl.fromJson(
           Map<String, dynamic> json, T Function(Object?) fromJsonT) =>
@@ -484,6 +670,7 @@ class _$PagedResponseDtoImpl<T> implements _PagedResponseDto<T> {
 
   final List<T> _items;
   @override
+  @JsonKey(name: 'data')
   List<T> get items {
     if (_items is EqualUnmodifiableListView) return _items;
     // ignore: implicit_dynamic_type
@@ -491,17 +678,11 @@ class _$PagedResponseDtoImpl<T> implements _PagedResponseDto<T> {
   }
 
   @override
-  final int total;
-  @override
-  final int page;
-  @override
-  final int limit;
-  @override
-  final bool hasMore;
+  final PagedMetaDto meta;
 
   @override
   String toString() {
-    return 'PagedResponseDto<$T>(items: $items, total: $total, page: $page, limit: $limit, hasMore: $hasMore)';
+    return 'PagedResponseDto<$T>(items: $items, meta: $meta)';
   }
 
   @override
@@ -510,16 +691,13 @@ class _$PagedResponseDtoImpl<T> implements _PagedResponseDto<T> {
         (other.runtimeType == runtimeType &&
             other is _$PagedResponseDtoImpl<T> &&
             const DeepCollectionEquality().equals(other._items, _items) &&
-            (identical(other.total, total) || other.total == total) &&
-            (identical(other.page, page) || other.page == page) &&
-            (identical(other.limit, limit) || other.limit == limit) &&
-            (identical(other.hasMore, hasMore) || other.hasMore == hasMore));
+            (identical(other.meta, meta) || other.meta == meta));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType,
-      const DeepCollectionEquality().hash(_items), total, page, limit, hasMore);
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(_items), meta);
 
   /// Create a copy of PagedResponseDto
   /// with the given fields replaced by the non-null parameter values.
@@ -536,28 +714,21 @@ class _$PagedResponseDtoImpl<T> implements _PagedResponseDto<T> {
   }
 }
 
-abstract class _PagedResponseDto<T> implements PagedResponseDto<T> {
+abstract class _PagedResponseDto<T> extends PagedResponseDto<T> {
   const factory _PagedResponseDto(
-      {required final List<T> items,
-      required final int total,
-      required final int page,
-      required final int limit,
-      required final bool hasMore}) = _$PagedResponseDtoImpl<T>;
+      {@JsonKey(name: 'data') required final List<T> items,
+      required final PagedMetaDto meta}) = _$PagedResponseDtoImpl<T>;
+  const _PagedResponseDto._() : super._();
 
   factory _PagedResponseDto.fromJson(
           Map<String, dynamic> json, T Function(Object?) fromJsonT) =
       _$PagedResponseDtoImpl<T>.fromJson;
 
   @override
+  @JsonKey(name: 'data')
   List<T> get items;
   @override
-  int get total;
-  @override
-  int get page;
-  @override
-  int get limit;
-  @override
-  bool get hasMore;
+  PagedMetaDto get meta;
 
   /// Create a copy of PagedResponseDto
   /// with the given fields replaced by the non-null parameter values.

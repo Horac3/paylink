@@ -4,13 +4,15 @@ import { detectProvider, providerCode } from '../../utils/detectProvider'
 import type { Provider } from '../../utils/detectProvider'
 import { ProviderBadge } from '../ProviderBadge'
 import { formatMoney } from '../../utils/formatMoney'
+import { SandboxPicker } from '../SandboxPicker'
+import { lookupSandboxDeposit } from '../../constants/sandboxNumbers'
 
 type ProviderSelection = 'AUTO' | 'AIRTEL' | 'TNM'
 
 interface GuestFlowProps {
   currency: string
   isDonation: boolean
-  onConfirm: (msisdn: string, provider: string | undefined, amount?: string) => void
+  onConfirm: (msisdn: string, provider: string | undefined, amount?: string, sandboxHint?: string) => void
   isLoading: boolean
 }
 
@@ -30,6 +32,7 @@ export function GuestFlow({ currency, isDonation, onConfirm, isLoading }: GuestF
   const detectedProvider: Provider = providerSel === 'AUTO' ? detectProvider(phone) : providerSel
 
   const fullMsisdn = `265${phone.replace(/^0/, '').replace(/\D/g, '')}`
+  const sandboxMatch = import.meta.env.DEV ? lookupSandboxDeposit(fullMsisdn) : undefined
 
   function handlePhoneChange(e: React.ChangeEvent<HTMLInputElement>) {
     const raw = e.target.value.replace(/\D/g, '').slice(0, 9)
@@ -56,8 +59,11 @@ export function GuestFlow({ currency, isDonation, onConfirm, isLoading }: GuestF
 
     if (!valid) return
 
-    const resolvedCode = providerSel === 'AUTO' ? providerCode(detectedProvider) : providerCode(detectedProvider)
-    onConfirm(fullMsisdn, resolvedCode, isDonation ? donationAmount : undefined)
+    const resolvedCode = providerCode(detectedProvider)
+    const hint = sandboxMatch
+      ? `${sandboxMatch.expectedStatus}${sandboxMatch.failureCode ? ` · ${sandboxMatch.failureCode}` : ''}`
+      : undefined
+    onConfirm(fullMsisdn, resolvedCode, isDonation ? donationAmount : undefined, hint)
   }
 
   const providerBtns: ProviderSelection[] = ['AUTO', 'AIRTEL', 'TNM']
@@ -129,6 +135,15 @@ export function GuestFlow({ currency, isDonation, onConfirm, isLoading }: GuestF
           )}
         </div>
         {phoneError && <p className="mt-1 text-xs text-error">{phoneError}</p>}
+        {sandboxMatch && (
+          <p className={`mt-1 text-xs font-medium ${
+            sandboxMatch.expectedStatus === 'COMPLETED' ? 'text-green-600' :
+            sandboxMatch.expectedStatus === 'SUBMITTED' ? 'text-yellow-600' : 'text-red-600'
+          }`}>
+            Sandbox: expected {sandboxMatch.expectedStatus}
+            {sandboxMatch.failureCode ? ` · ${sandboxMatch.failureCode}` : ''}
+          </p>
+        )}
       </div>
 
       {/* Provider selector */}
@@ -150,6 +165,16 @@ export function GuestFlow({ currency, isDonation, onConfirm, isLoading }: GuestF
           ))}
         </div>
       </div>
+
+      {/* Sandbox test number picker (dev only) */}
+      <SandboxPicker
+        onSelect={(n) => {
+          const local = n.localDigits.replace(/^0/, '')
+          setPhone(local)
+          setPhoneError('')
+          setProviderSel('AUTO')
+        }}
+      />
 
       {/* Submit */}
       <button

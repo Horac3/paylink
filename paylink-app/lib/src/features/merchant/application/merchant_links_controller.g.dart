@@ -7,7 +7,7 @@ part of 'merchant_links_controller.dart';
 // **************************************************************************
 
 String _$merchantLinksControllerHash() =>
-    r'b36d1c396815a74d71f6ed84025c871113fed660';
+    r'bb7a04395035bba61b870e2e0cd5d8b8190fd90a';
 
 /// See also [MerchantLinksController].
 @ProviderFor(MerchantLinksController)

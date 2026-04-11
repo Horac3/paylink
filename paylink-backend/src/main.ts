@@ -23,6 +23,9 @@ async function bootstrap() {
     'http://localhost:5173',                                     // payment page dev
     'http://localhost:5174',                                     // merchant portal dev
     'http://localhost:5175',                                     // docs dev
+    'http://127.0.0.1:5173',
+    'http://127.0.0.1:5174',
+    'http://127.0.0.1:5175',
   ].filter(Boolean) as string[];
   app.enableCors({
     origin: allowedOrigins,
@@ -43,18 +46,23 @@ async function bootstrap() {
   app.useGlobalInterceptors(new LoggingInterceptor());
   app.useGlobalGuards(new JwtAuthGuard(reflector));
 
-  // Swagger
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle('PayLink API')
-    .setDescription('Payment orchestration API for the Malawian market')
-    .setVersion('1.0')
-    .addServer('http://localhost:3000', 'Local')
-    .addServer('https://api.paylink.never9to5ive.com', 'Production')
-    .addBearerAuth()
-    .build();
+  // Swagger — off in production unless SWAGGER_ENABLED=true (saves memory on small VPS)
+  const isProd = config.get<string>('NODE_ENV') === 'production';
+  const swaggerEnabled =
+    !isProd || config.get<string>('SWAGGER_ENABLED') === 'true';
+  if (swaggerEnabled) {
+    const swaggerConfig = new DocumentBuilder()
+      .setTitle('PayLink API')
+      .setDescription('Payment orchestration API for the Malawian market')
+      .setVersion('1.0')
+      .addServer('http://localhost:3000', 'Local')
+      .addServer('https://api.paylink.never9to5ive.com', 'Production')
+      .addBearerAuth()
+      .build();
 
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api/docs', app, document);
+    const document = SwaggerModule.createDocument(app, swaggerConfig);
+    SwaggerModule.setup('api/docs', app, document);
+  }
 
   // Graceful shutdown
   app.enableShutdownHooks();
@@ -62,7 +70,9 @@ async function bootstrap() {
   const port = config.get<number>('APP_PORT', 3000);
   await app.listen(port);
   console.log(`PayLink API running on port ${port}`);
-  console.log(`Swagger: http://localhost:${port}/api/docs`);
+  if (swaggerEnabled) {
+    console.log(`Swagger: http://localhost:${port}/api/docs`);
+  }
 }
 
 bootstrap().catch(console.error);

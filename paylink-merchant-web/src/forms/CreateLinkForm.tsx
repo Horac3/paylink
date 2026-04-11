@@ -10,6 +10,7 @@ import { Select } from '../components/ui/Select';
 import { Button } from '../components/ui/Button';
 import { CopyButton } from '../components/ui/CopyButton';
 import { detectProvider } from '../utils/detectProvider';
+import { SandboxPicker } from '../components/ui/SandboxPicker';
 
 interface FormData {
   type: 'INVOICE' | 'SUBSCRIPTION' | 'DONATION' | 'REQUEST';
@@ -80,13 +81,12 @@ export function CreateLinkForm({ onSuccess }: Props) {
       data.metadata.forEach(({ key, value }) => {
         if (key) metaObj[key] = value;
       });
-      const amountNum = parseFloat(data.amount);
       return linksApi.create({
         type: data.type,
-        amount: amountNum,
+        amount: data.amount || undefined,
         currency: data.currency,
         description: data.description || undefined,
-        expiresAt: data.expiresAt || undefined,
+        expiresAt: data.expiresAt ? new Date(data.expiresAt).toISOString() : undefined,
         metadata: Object.keys(metaObj).length > 0 ? metaObj : undefined,
         recurrenceInterval:
           data.type === 'SUBSCRIPTION' ? data.recurrenceInterval || undefined : undefined,
@@ -94,8 +94,8 @@ export function CreateLinkForm({ onSuccess }: Props) {
           data.type === 'SUBSCRIPTION' && data.recurrenceMaxCycles
             ? parseInt(data.recurrenceMaxCycles, 10)
             : undefined,
-        recipientPhone: data.hasRecipient ? data.recipientPhone || undefined : undefined,
-        recipientProvider: data.hasRecipient ? data.recipientProvider || undefined : undefined,
+        recipientMsisdn: data.hasRecipient ? data.recipientPhone || undefined : undefined,
+        providerCode: data.hasRecipient ? data.recipientProvider || undefined : undefined,
       });
     },
     onSuccess: (link) => {
@@ -280,6 +280,12 @@ export function CreateLinkForm({ onSuccess }: Props) {
             </label>
             {watchedHasRecipient && (
               <>
+                <SandboxPicker
+                  onSelect={(n) => {
+                    setValue('recipientPhone', `+${n.msisdn}`);
+                    setValue('recipientProvider', n.providerCode);
+                  }}
+                />
                 <Input
                   label="Phone Number"
                   placeholder="+265 88 XXX XXXX"
@@ -385,9 +391,9 @@ export function CreateLinkSuccess({ link, onCreateAnother }: SuccessViewProps) {
           <p className="text-xs font-medium text-text-secondary mb-1">Standard URL</p>
           <div className="flex items-center gap-2 rounded-lg border border-border bg-gray-50 px-3 py-2">
             <span className="flex-1 truncate text-sm font-mono text-text-primary">
-              {link.standardUrl}
+              {link.url}
             </span>
-            <CopyButton text={link.standardUrl} />
+            <CopyButton text={link.url} />
           </div>
         </div>
         {link.prefilledUrl && (

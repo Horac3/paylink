@@ -1,19 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx tsc:*)",
-      "Bash(node -e ':*)",
-      "Bash(docker compose:*)",
-      "Bash(docker exec:*)",
-      "Bash(powershell -Command \"Get-Process -Id \\(Get-NetTCPConnection -LocalPort 5432 -State Listen | Select-Object -First 1 -ExpandProperty OwningProcess\\) | Select-Object Name, Id\")",
-      "Bash(node -e \"const pg = require\\('pg'\\); console.log\\('pg version:', pg.version || require\\('./node_modules/pg/package.json'\\).version\\)\")",
-      "Bash(node -e \"const{Pool}=require\\('pg'\\);const p=new Pool\\({host:'127.0.0.1',port:5432,user:'paylink',database:'paylink',password:'paylink'}\\);p.query\\('SELECT 1'\\).then\\(\\(\\)=>{p.end\\(\\)}\\).catch\\(e=>{console.error\\(e.message\\);p.end\\(\\)}\\)\")",
-      "Bash(DATABASE_URL=postgresql://paylink:paylink_password@localhost:5433/paylink npx prisma migrate dev)",
-      "Bash(DATABASE_URL=postgresql://paylink:paylink_password@localhost:5433/paylink npx prisma migrate dev --name init)",
-      "Bash(grep -E \"\\\\.\\(ts|js\\)$\")",
-      "Bash(DATABASE_URL=postgresql://paylink:paylink_password@localhost:5433/paylink npx prisma migrate dev --name add_receipt_and_provider_ref_to_transaction)",
-      "Bash(DATABASE_URL=postgresql://paylink:paylink_password@localhost:5433/paylink npx prisma generate)",
-      "Bash(npm create:*)"
+      "Bash(curl:*)",
+      "Bash(python3 -c 'import uuid; print\\(uuid.uuid4\\(\\)\\)')",
+      "Bash(xargs grep:*)",
+      "Bash(find /c/Users/horac/Documents/Playground/Personal/TypeScript/paylink/paylink/paylink-app/lib -type f -name \"*.dart\" -exec grep -l \"PagedResponseDto\" {} \\\\;)",
+      "Bash(flutter pub:*)"
     ]
   }
 }

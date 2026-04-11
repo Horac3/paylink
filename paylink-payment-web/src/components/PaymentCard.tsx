@@ -108,9 +108,9 @@ export function PaymentCard({
   }, [onConfirm, recipientToken, slug])
 
   const handleConfirmGuest = useCallback(
-    (msisdn: string, provider: string | undefined, _amount?: string) => {
+    (msisdn: string, provider: string | undefined, _amount?: string, sandboxHint?: string) => {
       const body: InitiatePaymentBody = { msisdn, ...(provider ? { providerCode: provider } : {}) }
-      void onConfirm(slug, body)
+      void onConfirm(slug, body, sandboxHint)
     },
     [onConfirm, slug],
   )
@@ -191,6 +191,7 @@ export function PaymentCard({
               link={state.link}
               expiresAt={state.expiresAt}
               onCancel={handleCancelPolling}
+              sandboxHint={state.sandboxHint}
             />
           )}
 

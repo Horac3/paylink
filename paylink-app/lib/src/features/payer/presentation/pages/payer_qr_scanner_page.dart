@@ -32,27 +32,32 @@ class _PayerQrScannerPageState extends State<PayerQrScannerPage> {
     _scanned = true;
     _controller.stop();
 
-    // Extract slug from a paylink deep-link URL or treat the raw value as slug
-    final slug = _extractSlug(raw);
+    // Extract slug (and optional ?r= recipient token) from a paylink URL
+    final (slug, recipientToken) = _extractSlugAndToken(raw);
     if (!mounted) return;
 
-    final path = Routes.payerPaymentConfirm.replaceFirst(':slug', slug);
+    var path = Routes.payerPaymentConfirm.replaceFirst(':slug', slug);
+    if (recipientToken != null) path = '$path?r=${Uri.encodeComponent(recipientToken)}';
     context.pushReplacement(path);
   }
 
-  String _extractSlug(String raw) {
+  /// Returns (slug, recipientToken?) from a scanned value.
+  /// Handles full URLs like https://pay.paylink.mw/payer/pay/<slug>?r=TOKEN
+  /// or bare slugs.
+  (String, String?) _extractSlugAndToken(String raw) {
     try {
       final uri = Uri.parse(raw);
-      // Expected path: /payer/pay/<slug>
       final segments = uri.pathSegments;
       if (segments.length >= 3 &&
           segments[0] == 'payer' &&
           segments[1] == 'pay') {
-        return segments[2];
+        final slug = segments[2];
+        final token = uri.queryParameters['r'];
+        return (slug, token);
       }
     } catch (_) {}
-    // Fallback: treat entire value as slug
-    return raw;
+    // Fallback: treat entire value as slug, no token
+    return (raw, null);
   }
 
   @override

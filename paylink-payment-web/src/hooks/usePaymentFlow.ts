@@ -9,7 +9,7 @@ export type PaymentState =
   | { status: 'loading' }
   | { status: 'ready'; link: PublicLink; flow: FlowType }
   | { status: 'confirming'; link: PublicLink; flow: FlowType }
-  | { status: 'polling'; txnId: string; expiresAt: number; link: PublicLink; flow: FlowType }
+  | { status: 'polling'; txnId: string; expiresAt: number; link: PublicLink; flow: FlowType; sandboxHint?: string }
   | { status: 'success'; txnId: string; reference?: string; link: PublicLink }
   | { status: 'failed'; reason: string; link: PublicLink; flow: FlowType }
   | { status: 'timeout'; link: PublicLink; flow: FlowType }
@@ -19,7 +19,7 @@ type Action =
   | { type: 'LINK_LOADED'; link: PublicLink; flow: FlowType }
   | { type: 'LINK_ERROR'; message: string }
   | { type: 'CONFIRM_START' }
-  | { type: 'POLLING_START'; txnId: string }
+  | { type: 'POLLING_START'; txnId: string; sandboxHint?: string }
   | { type: 'PAYMENT_SUCCESS'; txnId: string; reference?: string }
   | { type: 'PAYMENT_FAILED'; reason: string }
   | { type: 'TIMEOUT' }
@@ -80,6 +80,7 @@ function reducer(state: PaymentState, action: Action): PaymentState {
         expiresAt: Date.now() + 180_000,
         link: extractLink(state),
         flow: extractFlow(state),
+        sandboxHint: action.sandboxHint,
       }
     case 'PAYMENT_SUCCESS':
       return { status: 'success', txnId: action.txnId, reference: action.reference, link: extractLink(state) }
@@ -102,7 +103,7 @@ export interface UsePaymentFlowReturn {
   state: PaymentState
   loadLink: (link: PublicLink, flow: FlowType) => void
   setError: (message: string) => void
-  confirm: (slug: string, body: InitiatePaymentBody) => Promise<void>
+  confirm: (slug: string, body: InitiatePaymentBody, sandboxHint?: string) => Promise<void>
   retry: (link: PublicLink, flow: FlowType) => void
   switchToGuest: (link: PublicLink) => void
   onPollingSuccess: (txnId: string, reference?: string) => void
@@ -121,11 +122,11 @@ export function usePaymentFlow(): UsePaymentFlowReturn {
     dispatch({ type: 'LINK_ERROR', message })
   }, [])
 
-  const confirm = useCallback(async (slug: string, body: InitiatePaymentBody) => {
+  const confirm = useCallback(async (slug: string, body: InitiatePaymentBody, sandboxHint?: string) => {
     dispatch({ type: 'CONFIRM_START' })
     try {
       const result = await initiatePayment(slug, body)
-      dispatch({ type: 'POLLING_START', txnId: result.transactionId })
+      dispatch({ type: 'POLLING_START', txnId: result.transactionId, sandboxHint })
     } catch (err: unknown) {
       let reason = 'Payment initiation failed. Please try again.'
       if (err && typeof err === 'object' && 'response' in err) {

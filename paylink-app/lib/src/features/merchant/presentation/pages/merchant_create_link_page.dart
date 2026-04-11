@@ -17,23 +17,29 @@ class MerchantCreateLinkPage extends ConsumerStatefulWidget {
 class _MerchantCreateLinkPageState
     extends ConsumerState<MerchantCreateLinkPage> {
   final _formKey = GlobalKey<FormState>();
-  final _titleCtrl = TextEditingController();
+  final _descriptionCtrl = TextEditingController();
   final _amountCtrl = TextEditingController();
-  final _maxUsesCtrl = TextEditingController();
+  final _maxCyclesCtrl = TextEditingController();
 
-  String _type = 'FIXED';
-  String _cycle = 'MONTHLY';
+  String _type = 'INVOICE';
+  String _recurrenceInterval = 'MONTHLY';
   bool _isLoading = false;
   String? _error;
 
-  static const _types = ['FIXED', 'OPEN', 'SUBSCRIPTION'];
-  static const _cycles = ['WEEKLY', 'MONTHLY'];
+  static const _types = [
+    ('INVOICE', 'Invoice', 'One-time fixed amount'),
+    ('DONATION', 'Donation', 'Any amount, payer decides'),
+    ('REQUEST', 'Request', 'Request payment from someone'),
+    ('SUBSCRIPTION', 'Subscription', 'Recurring payment'),
+  ];
+
+  static const _intervals = ['DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY'];
 
   @override
   void dispose() {
-    _titleCtrl.dispose();
+    _descriptionCtrl.dispose();
     _amountCtrl.dispose();
-    _maxUsesCtrl.dispose();
+    _maxCyclesCtrl.dispose();
     super.dispose();
   }
 
@@ -45,12 +51,18 @@ class _MerchantCreateLinkPageState
     });
     try {
       final dto = CreateLinkRequestDto(
-        title: _titleCtrl.text.trim(),
         type: _type,
-        amount: _type == 'FIXED' ? _amountCtrl.text.trim() : null,
         currency: 'MWK',
-        maxUses: _maxUsesCtrl.text.isNotEmpty
-            ? int.tryParse(_maxUsesCtrl.text.trim())
+        description: _descriptionCtrl.text.trim().isEmpty
+            ? null
+            : _descriptionCtrl.text.trim(),
+        amount: (_type == 'INVOICE' || _type == 'SUBSCRIPTION' || _type == 'REQUEST')
+            ? _amountCtrl.text.trim()
+            : null,
+        recurrenceInterval:
+            _type == 'SUBSCRIPTION' ? _recurrenceInterval : null,
+        maxCycles: _type == 'SUBSCRIPTION' && _maxCyclesCtrl.text.isNotEmpty
+            ? int.tryParse(_maxCyclesCtrl.text.trim())
             : null,
       );
       await ref
@@ -79,27 +91,35 @@ class _MerchantCreateLinkPageState
                 ErrorBanner(message: _error!),
                 const SizedBox(height: 16),
               ],
-              TextFormField(
-                controller: _titleCtrl,
-                decoration: const InputDecoration(
-                  labelText: 'Title',
-                  hintText: 'e.g. School Fees Payment',
+
+              // Type selector
+              Text('Link Type', style: AppTextStyles.labelMedium),
+              const SizedBox(height: 8),
+              ..._types.map(
+                (t) => RadioListTile<String>(
+                  value: t.$1,
+                  groupValue: _type,
+                  title: Text(t.$2, style: AppTextStyles.bodyMedium),
+                  subtitle: Text(t.$3, style: AppTextStyles.bodySmall),
+                  contentPadding: EdgeInsets.zero,
+                  onChanged: (v) => setState(() => _type = v!),
                 ),
-                validator: (v) =>
-                    (v == null || v.trim().isEmpty) ? 'Title is required' : null,
+              ),
+              const SizedBox(height: 8),
+
+              // Description
+              TextFormField(
+                controller: _descriptionCtrl,
+                decoration: const InputDecoration(
+                  labelText: 'Description (optional)',
+                  hintText: 'e.g. School fees - Term 2',
+                ),
                 textInputAction: TextInputAction.next,
               ),
               const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                value: _type,
-                decoration: const InputDecoration(labelText: 'Type'),
-                items: _types
-                    .map((t) => DropdownMenuItem(value: t, child: Text(t)))
-                    .toList(),
-                onChanged: (v) => setState(() => _type = v!),
-              ),
-              const SizedBox(height: 16),
-              if (_type == 'FIXED') ...[
+
+              // Amount (not for DONATION)
+              if (_type != 'DONATION') ...[
                 TextFormField(
                   controller: _amountCtrl,
                   decoration: const InputDecoration(
@@ -109,9 +129,9 @@ class _MerchantCreateLinkPageState
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
                   validator: (v) {
-                    if (_type != 'FIXED') return null;
+                    if (_type == 'DONATION') return null;
                     if (v == null || v.trim().isEmpty) {
-                      return 'Amount is required for fixed links';
+                      return 'Amount is required';
                     }
                     if (double.tryParse(v.trim()) == null) {
                       return 'Enter a valid amount';
@@ -122,33 +142,36 @@ class _MerchantCreateLinkPageState
                 ),
                 const SizedBox(height: 16),
               ],
+
+              // Recurrence (SUBSCRIPTION only)
               if (_type == 'SUBSCRIPTION') ...[
                 DropdownButtonFormField<String>(
-                  value: _cycle,
+                  value: _recurrenceInterval,
                   decoration: const InputDecoration(labelText: 'Billing Cycle'),
-                  items: _cycles
+                  items: _intervals
                       .map((c) => DropdownMenuItem(value: c, child: Text(c)))
                       .toList(),
-                  onChanged: (v) => setState(() => _cycle = v!),
+                  onChanged: (v) => setState(() => _recurrenceInterval = v!),
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _maxCyclesCtrl,
+                  decoration: const InputDecoration(
+                    labelText: 'Max Cycles (optional)',
+                    hintText: 'Leave blank for unlimited',
+                  ),
+                  keyboardType: TextInputType.number,
+                  validator: (v) {
+                    if (v == null || v.trim().isEmpty) return null;
+                    if (int.tryParse(v.trim()) == null) {
+                      return 'Enter a whole number';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 16),
               ],
-              TextFormField(
-                controller: _maxUsesCtrl,
-                decoration: const InputDecoration(
-                  labelText: 'Max Uses (optional)',
-                  hintText: 'Leave blank for unlimited',
-                ),
-                keyboardType: TextInputType.number,
-                validator: (v) {
-                  if (v == null || v.trim().isEmpty) return null;
-                  if (int.tryParse(v.trim()) == null) {
-                    return 'Enter a whole number';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 32),
+
               Text(
                 'Currency: MWK',
                 style: AppTextStyles.bodySmall
@@ -161,6 +184,7 @@ class _MerchantCreateLinkPageState
                 isLoading: _isLoading,
                 label: 'Create Link',
               ),
+              const SizedBox(height: 24),
             ],
           ),
         ),

@@ -26,7 +26,7 @@ class MerchantLinkDetailPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: detailAsync.maybeWhen(
-          data: (d) => Text(d.title),
+          data: (d) => Text(d.slug),
           orElse: () => const Text('Link Detail'),
         ),
         actions: [
@@ -35,7 +35,7 @@ class MerchantLinkDetailPage extends ConsumerWidget {
               icon: const Icon(Icons.copy),
               tooltip: 'Copy link',
               onPressed: () {
-                final url = d.deepLink ?? '';
+                final url = 'https://paylink.never9to5ive.com/pay/${d.slug}';
                 Clipboard.setData(ClipboardData(text: url));
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Link copied to clipboard')),
@@ -117,57 +117,34 @@ class _LinkDetailBody extends ConsumerWidget {
           const SizedBox(height: 12),
         ],
 
-        // Deep link
-        if (link.deepLink != null) ...[
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Payment Link', style: AppTextStyles.bodySmall),
-                  const SizedBox(height: 8),
-                  TextFormField(
-                    initialValue: link.deepLink,
-                    readOnly: true,
-                    style: AppTextStyles.bodyMedium,
-                    decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.copy),
-                        onPressed: () {
-                          Clipboard.setData(
-                              ClipboardData(text: link.deepLink!));
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Link copied to clipboard')),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-        ],
-
-        // Usage
+        // Payment URL
         Card(
           child: Padding(
             padding: const EdgeInsets.all(16),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.people_outline,
-                    color: AppColors.textSecondary, size: 20),
-                const SizedBox(width: 8),
-                Text('Usage', style: AppTextStyles.bodyMedium),
-                const Spacer(),
-                Text(
-                  link.maxUses != null
-                      ? '${link.useCount ?? 0} / ${link.maxUses} uses'
-                      : '${link.useCount ?? 0} uses (Unlimited)',
-                  style: AppTextStyles.labelMedium,
+                Text('Payment Link', style: AppTextStyles.bodySmall),
+                const SizedBox(height: 8),
+                TextFormField(
+                  initialValue:
+                      'https://paylink.never9to5ive.com/pay/${link.slug}',
+                  readOnly: true,
+                  style: AppTextStyles.bodyMedium,
+                  decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.copy),
+                      onPressed: () {
+                        Clipboard.setData(ClipboardData(
+                            text:
+                                'https://paylink.never9to5ive.com/pay/${link.slug}'));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Link copied to clipboard')),
+                        );
+                      },
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -185,25 +162,25 @@ class _LinkDetailBody extends ConsumerWidget {
         ),
         const SizedBox(height: 12),
 
-        // Archive button
+        // Cancel button
         OutlinedButton.icon(
           onPressed: () async {
             final confirmed = await showDialog<bool>(
               context: context,
               builder: (ctx) => AlertDialog(
-                title: const Text('Archive Link'),
+                title: const Text('Cancel Link'),
                 content: Text(
-                    'Archive "${link.title}"? It will no longer be usable.'),
+                    'Cancel link "${link.slug}"? It will no longer be usable.'),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(ctx, false),
-                    child: const Text('Cancel'),
+                    child: const Text('Keep'),
                   ),
                   TextButton(
                     onPressed: () => Navigator.pop(ctx, true),
                     style: TextButton.styleFrom(
                         foregroundColor: AppColors.error),
-                    child: const Text('Archive'),
+                    child: const Text('Cancel Link'),
                   ),
                 ],
               ),
@@ -211,12 +188,12 @@ class _LinkDetailBody extends ConsumerWidget {
             if (confirmed == true && context.mounted) {
               await ref
                   .read(merchantLinksControllerProvider.notifier)
-                  .archiveLink(link.id);
+                  .cancelLink(link.id);
               if (context.mounted) context.pop();
             }
           },
-          icon: const Icon(Icons.archive, color: AppColors.error),
-          label: const Text('Archive Link'),
+          icon: const Icon(Icons.cancel_outlined, color: AppColors.error),
+          label: const Text('Cancel Link'),
           style: OutlinedButton.styleFrom(
             foregroundColor: AppColors.error,
             side: const BorderSide(color: AppColors.error),
@@ -232,7 +209,8 @@ class _LinkDetailBody extends ConsumerWidget {
         _ => BadgeStatus.pending,
       };
 
-  String _fmtDate(String iso) {
+  String _fmtDate(String? iso) {
+    if (iso == null) return '—';
     try {
       final d = DateTime.parse(iso).toLocal();
       return '${d.day}/${d.month}/${d.year}';

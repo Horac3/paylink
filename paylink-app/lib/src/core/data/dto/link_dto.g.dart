@@ -10,14 +10,14 @@ _$PaymentLinkDtoImpl _$$PaymentLinkDtoImplFromJson(Map<String, dynamic> json) =>
     _$PaymentLinkDtoImpl(
       id: json['id'] as String,
       slug: json['slug'] as String,
-      title: json['title'] as String,
       type: json['type'] as String,
+      status: json['status'] as String,
       amount: json['amount'] as String?,
       currency: json['currency'] as String,
-      status: json['status'] as String,
-      createdAt: json['createdAt'] as String,
-      useCount: (json['useCount'] as num?)?.toInt(),
-      maxUses: (json['maxUses'] as num?)?.toInt(),
+      description: json['description'] as String?,
+      expiresAt: json['expiresAt'] as String?,
+      createdAt: json['createdAt'] as String?,
+      metadata: json['metadata'] as Map<String, dynamic>?,
     );
 
 Map<String, dynamic> _$$PaymentLinkDtoImplToJson(
@@ -25,36 +25,44 @@ Map<String, dynamic> _$$PaymentLinkDtoImplToJson(
     <String, dynamic>{
       'id': instance.id,
       'slug': instance.slug,
-      'title': instance.title,
       'type': instance.type,
+      'status': instance.status,
       'amount': instance.amount,
       'currency': instance.currency,
-      'status': instance.status,
+      'description': instance.description,
+      'expiresAt': instance.expiresAt,
       'createdAt': instance.createdAt,
-      'useCount': instance.useCount,
-      'maxUses': instance.maxUses,
+      'metadata': instance.metadata,
     };
 
 _$CreateLinkRequestDtoImpl _$$CreateLinkRequestDtoImplFromJson(
         Map<String, dynamic> json) =>
     _$CreateLinkRequestDtoImpl(
-      title: json['title'] as String,
       type: json['type'] as String,
       amount: json['amount'] as String?,
       currency: json['currency'] as String,
       description: json['description'] as String?,
-      maxUses: (json['maxUses'] as num?)?.toInt(),
+      expiresAt: json['expiresAt'] as String?,
+      metadata: json['metadata'] as Map<String, dynamic>?,
+      recipientMsisdn: json['recipientMsisdn'] as String?,
+      providerCode: json['providerCode'] as String?,
+      recurrenceInterval: json['recurrenceInterval'] as String?,
+      maxCycles: (json['maxCycles'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$$CreateLinkRequestDtoImplToJson(
         _$CreateLinkRequestDtoImpl instance) =>
     <String, dynamic>{
-      'title': instance.title,
       'type': instance.type,
       'amount': instance.amount,
       'currency': instance.currency,
       'description': instance.description,
-      'maxUses': instance.maxUses,
+      'expiresAt': instance.expiresAt,
+      'metadata': instance.metadata,
+      'recipientMsisdn': instance.recipientMsisdn,
+      'providerCode': instance.providerCode,
+      'recurrenceInterval': instance.recurrenceInterval,
+      'maxCycles': instance.maxCycles,
     };
 
 _$BulkSendRequestDtoImpl _$$BulkSendRequestDtoImplFromJson(
@@ -76,30 +84,28 @@ _$LinkDetailDtoImpl _$$LinkDetailDtoImplFromJson(Map<String, dynamic> json) =>
     _$LinkDetailDtoImpl(
       id: json['id'] as String,
       slug: json['slug'] as String,
-      title: json['title'] as String,
       type: json['type'] as String,
+      status: json['status'] as String,
       amount: json['amount'] as String?,
       currency: json['currency'] as String,
-      status: json['status'] as String,
-      createdAt: json['createdAt'] as String,
-      useCount: (json['useCount'] as num?)?.toInt(),
-      maxUses: (json['maxUses'] as num?)?.toInt(),
       description: json['description'] as String?,
-      deepLink: json['deepLink'] as String?,
+      expiresAt: json['expiresAt'] as String?,
+      createdAt: json['createdAt'] as String?,
+      qrCodeBase64: json['qrCodeBase64'] as String?,
+      metadata: json['metadata'] as Map<String, dynamic>?,
     );
 
 Map<String, dynamic> _$$LinkDetailDtoImplToJson(_$LinkDetailDtoImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'slug': instance.slug,
-      'title': instance.title,
       'type': instance.type,
+      'status': instance.status,
       'amount': instance.amount,
       'currency': instance.currency,
-      'status': instance.status,
-      'createdAt': instance.createdAt,
-      'useCount': instance.useCount,
-      'maxUses': instance.maxUses,
       'description': instance.description,
-      'deepLink': instance.deepLink,
+      'expiresAt': instance.expiresAt,
+      'createdAt': instance.createdAt,
+      'qrCodeBase64': instance.qrCodeBase64,
+      'metadata': instance.metadata,
     };

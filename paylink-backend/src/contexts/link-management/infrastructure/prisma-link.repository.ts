@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import Decimal from 'decimal.js';
-import { Prisma } from '@prisma/client';
+import { Prisma, LinkStatus as PrismaLinkStatus } from '@prisma/client';
 import { PrismaService } from '../../../infrastructure/database/prisma.service';
 import { ILinkRepository } from '../domain/ports/link-repository.interface';
 import {
@@ -30,15 +30,16 @@ export class PrismaLinkRepository implements ILinkRepository {
     return row ? this.toDomain(row) : null;
   }
 
-  async findByMerchant(merchantId: string, page: number, limit: number) {
+  async findByMerchant(merchantId: string, page: number, limit: number, status?: string) {
+    const where = status ? { merchantId, status: status as PrismaLinkStatus } : { merchantId };
     const [items, total] = await Promise.all([
       this.prisma.paymentLink.findMany({
-        where: { merchantId },
+        where,
         skip: (page - 1) * limit,
         take: limit,
         orderBy: { createdAt: 'desc' },
       }),
-      this.prisma.paymentLink.count({ where: { merchantId } }),
+      this.prisma.paymentLink.count({ where }),
     ]);
     return { items: items.map((r) => this.toDomain(r)), total };
   }
@@ -79,6 +80,7 @@ export class PrismaLinkRepository implements ILinkRepository {
     expiresAt: Date | null;
     metadata: unknown;
     qrCodeBase64: string | null;
+    createdAt?: Date;
   }): PaymentLink {
     const recurrencePolicy = row.recurrenceConfig
       ? RecurrencePolicy.create(row.recurrenceConfig as RecurrencePolicyProps)
@@ -96,6 +98,7 @@ export class PrismaLinkRepository implements ILinkRepository {
       expiresAt: row.expiresAt,
       metadata: row.metadata as Record<string, unknown> | null,
       qrCodeBase64: row.qrCodeBase64,
+      createdAt: row.createdAt,
     });
   }
 }

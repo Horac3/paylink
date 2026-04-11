@@ -27,7 +27,7 @@ export interface PaymentLink {
   recipientProvider?: string;
   recurrenceInterval?: string;
   recurrenceMaxCycles?: number;
-  standardUrl: string;
+  url: string;
   prefilledUrl?: string;
   qrCodeUrl?: string;
   merchantId: string;

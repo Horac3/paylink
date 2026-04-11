@@ -7,14 +7,14 @@ class PaymentLinkDto with _$PaymentLinkDto {
   const factory PaymentLinkDto({
     required String id,
     required String slug,
-    required String title,
     required String type,
+    required String status,
     String? amount,
     required String currency,
-    required String status,
-    required String createdAt,
-    int? useCount,
-    int? maxUses,
+    String? description,
+    String? expiresAt,
+    String? createdAt,
+    Map<String, dynamic>? metadata,
   }) = _PaymentLinkDto;
   factory PaymentLinkDto.fromJson(Map<String, dynamic> json) =>
       _$PaymentLinkDtoFromJson(json);
@@ -23,12 +23,16 @@ class PaymentLinkDto with _$PaymentLinkDto {
 @freezed
 class CreateLinkRequestDto with _$CreateLinkRequestDto {
   const factory CreateLinkRequestDto({
-    required String title,
     required String type,
     String? amount,
     required String currency,
     String? description,
-    int? maxUses,
+    String? expiresAt,
+    Map<String, dynamic>? metadata,
+    String? recipientMsisdn,
+    String? providerCode,
+    String? recurrenceInterval,
+    int? maxCycles,
   }) = _CreateLinkRequestDto;
   factory CreateLinkRequestDto.fromJson(Map<String, dynamic> json) =>
       _$CreateLinkRequestDtoFromJson(json);
@@ -49,16 +53,15 @@ class LinkDetailDto with _$LinkDetailDto {
   const factory LinkDetailDto({
     required String id,
     required String slug,
-    required String title,
     required String type,
+    required String status,
     String? amount,
     required String currency,
-    required String status,
-    required String createdAt,
-    int? useCount,
-    int? maxUses,
     String? description,
-    String? deepLink,
+    String? expiresAt,
+    String? createdAt,
+    String? qrCodeBase64,
+    Map<String, dynamic>? metadata,
   }) = _LinkDetailDto;
   factory LinkDetailDto.fromJson(Map<String, dynamic> json) =>
       _$LinkDetailDtoFromJson(json);

@@ -36,17 +36,35 @@ Map<String, dynamic> _$$TransactionDtoImplToJson(
 _$InitiatePaymentRequestDtoImpl _$$InitiatePaymentRequestDtoImplFromJson(
         Map<String, dynamic> json) =>
     _$InitiatePaymentRequestDtoImpl(
-      linkSlug: json['linkSlug'] as String,
-      payerSessionToken: json['payerSessionToken'] as String,
-      amount: json['amount'] as String?,
+      payerSessionToken: json['payerSessionToken'] as String?,
+      recipientToken: json['recipientToken'] as String?,
+      msisdn: json['msisdn'] as String?,
+      providerCode: json['providerCode'] as String?,
     );
 
 Map<String, dynamic> _$$InitiatePaymentRequestDtoImplToJson(
         _$InitiatePaymentRequestDtoImpl instance) =>
     <String, dynamic>{
-      'linkSlug': instance.linkSlug,
       'payerSessionToken': instance.payerSessionToken,
-      'amount': instance.amount,
+      'recipientToken': instance.recipientToken,
+      'msisdn': instance.msisdn,
+      'providerCode': instance.providerCode,
+    };
+
+_$PaymentStatusDtoImpl _$$PaymentStatusDtoImplFromJson(
+        Map<String, dynamic> json) =>
+    _$PaymentStatusDtoImpl(
+      transactionId: json['transactionId'] as String,
+      status: json['status'] as String,
+      externalRef: json['externalRef'] as String?,
+    );
+
+Map<String, dynamic> _$$PaymentStatusDtoImplToJson(
+        _$PaymentStatusDtoImpl instance) =>
+    <String, dynamic>{
+      'transactionId': instance.transactionId,
+      'status': instance.status,
+      'externalRef': instance.externalRef,
     };
 
 _$InitiatePaymentResponseDtoImpl _$$InitiatePaymentResponseDtoImplFromJson(

@@ -83,18 +83,18 @@ class _LinkCard extends ConsumerWidget {
         return await showDialog<bool>(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: const Text('Archive Link'),
+            title: const Text('Cancel Link'),
             content:
-                Text('Archive "${link.title}"? It will no longer be usable.'),
+                Text('Cancel link "${link.slug}"? It will no longer be usable.'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx, false),
-                child: const Text('Cancel'),
+                child: const Text('Keep'),
               ),
               TextButton(
                 onPressed: () => Navigator.pop(ctx, true),
                 style: TextButton.styleFrom(foregroundColor: AppColors.error),
-                child: const Text('Archive'),
+                child: const Text('Cancel'),
               ),
             ],
           ),
@@ -103,12 +103,12 @@ class _LinkCard extends ConsumerWidget {
       onDismissed: (_) {
         ref
             .read(merchantLinksControllerProvider.notifier)
-            .archiveLink(link.id);
+            .cancelLink(link.id);
       },
       child: Card(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         child: ListTile(
-          title: Text(link.title, style: AppTextStyles.titleMedium),
+          title: Text(link.slug, style: AppTextStyles.titleMedium),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

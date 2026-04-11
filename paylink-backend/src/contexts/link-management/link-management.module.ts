@@ -10,6 +10,7 @@ import {
   GetLinkHandler,
   GetLinkBySlugHandler,
 } from './application/queries/get-link.handler';
+import { ListLinksHandler } from './application/queries/list-links.handler';
 import { PrismaLinkRepository } from './infrastructure/prisma-link.repository';
 import { SlugGeneratorService } from './infrastructure/slug-generator.service';
 import { QrCodeService } from './infrastructure/qr-code.service';
@@ -24,6 +25,7 @@ const QueryHandlers = [
   ValidateLinkHandler,
   GetLinkHandler,
   GetLinkBySlugHandler,
+  ListLinksHandler,
 ];
 
 @Module({

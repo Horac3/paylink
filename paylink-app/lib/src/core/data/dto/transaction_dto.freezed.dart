@@ -341,9 +341,13 @@ InitiatePaymentRequestDto _$InitiatePaymentRequestDtoFromJson(
 
 /// @nodoc
 mixin _$InitiatePaymentRequestDto {
-  String get linkSlug => throw _privateConstructorUsedError;
-  String get payerSessionToken => throw _privateConstructorUsedError;
-  String? get amount => throw _privateConstructorUsedError;
+// Strategy A — registered payer session
+  String? get payerSessionToken =>
+      throw _privateConstructorUsedError; // Strategy B — pre-filled recipient token
+  String? get recipientToken =>
+      throw _privateConstructorUsedError; // Strategy C — guest MSISDN
+  String? get msisdn => throw _privateConstructorUsedError;
+  String? get providerCode => throw _privateConstructorUsedError;
 
   /// Serializes this InitiatePaymentRequestDto to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -361,7 +365,11 @@ abstract class $InitiatePaymentRequestDtoCopyWith<$Res> {
           $Res Function(InitiatePaymentRequestDto) then) =
       _$InitiatePaymentRequestDtoCopyWithImpl<$Res, InitiatePaymentRequestDto>;
   @useResult
-  $Res call({String linkSlug, String payerSessionToken, String? amount});
+  $Res call(
+      {String? payerSessionToken,
+      String? recipientToken,
+      String? msisdn,
+      String? providerCode});
 }
 
 /// @nodoc
@@ -380,22 +388,27 @@ class _$InitiatePaymentRequestDtoCopyWithImpl<$Res,
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? linkSlug = null,
-    Object? payerSessionToken = null,
-    Object? amount = freezed,
+    Object? payerSessionToken = freezed,
+    Object? recipientToken = freezed,
+    Object? msisdn = freezed,
+    Object? providerCode = freezed,
   }) {
     return _then(_value.copyWith(
-      linkSlug: null == linkSlug
-          ? _value.linkSlug
-          : linkSlug // ignore: cast_nullable_to_non_nullable
-              as String,
-      payerSessionToken: null == payerSessionToken
+      payerSessionToken: freezed == payerSessionToken
           ? _value.payerSessionToken
           : payerSessionToken // ignore: cast_nullable_to_non_nullable
-              as String,
-      amount: freezed == amount
-          ? _value.amount
-          : amount // ignore: cast_nullable_to_non_nullable
+              as String?,
+      recipientToken: freezed == recipientToken
+          ? _value.recipientToken
+          : recipientToken // ignore: cast_nullable_to_non_nullable
+              as String?,
+      msisdn: freezed == msisdn
+          ? _value.msisdn
+          : msisdn // ignore: cast_nullable_to_non_nullable
+              as String?,
+      providerCode: freezed == providerCode
+          ? _value.providerCode
+          : providerCode // ignore: cast_nullable_to_non_nullable
               as String?,
     ) as $Val);
   }
@@ -410,7 +423,11 @@ abstract class _$$InitiatePaymentRequestDtoImplCopyWith<$Res>
       __$$InitiatePaymentRequestDtoImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String linkSlug, String payerSessionToken, String? amount});
+  $Res call(
+      {String? payerSessionToken,
+      String? recipientToken,
+      String? msisdn,
+      String? providerCode});
 }
 
 /// @nodoc
@@ -428,22 +445,27 @@ class __$$InitiatePaymentRequestDtoImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? linkSlug = null,
-    Object? payerSessionToken = null,
-    Object? amount = freezed,
+    Object? payerSessionToken = freezed,
+    Object? recipientToken = freezed,
+    Object? msisdn = freezed,
+    Object? providerCode = freezed,
   }) {
     return _then(_$InitiatePaymentRequestDtoImpl(
-      linkSlug: null == linkSlug
-          ? _value.linkSlug
-          : linkSlug // ignore: cast_nullable_to_non_nullable
-              as String,
-      payerSessionToken: null == payerSessionToken
+      payerSessionToken: freezed == payerSessionToken
           ? _value.payerSessionToken
           : payerSessionToken // ignore: cast_nullable_to_non_nullable
-              as String,
-      amount: freezed == amount
-          ? _value.amount
-          : amount // ignore: cast_nullable_to_non_nullable
+              as String?,
+      recipientToken: freezed == recipientToken
+          ? _value.recipientToken
+          : recipientToken // ignore: cast_nullable_to_non_nullable
+              as String?,
+      msisdn: freezed == msisdn
+          ? _value.msisdn
+          : msisdn // ignore: cast_nullable_to_non_nullable
+              as String?,
+      providerCode: freezed == providerCode
+          ? _value.providerCode
+          : providerCode // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }
@@ -453,21 +475,29 @@ class __$$InitiatePaymentRequestDtoImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$InitiatePaymentRequestDtoImpl implements _InitiatePaymentRequestDto {
   const _$InitiatePaymentRequestDtoImpl(
-      {required this.linkSlug, required this.payerSessionToken, this.amount});
+      {this.payerSessionToken,
+      this.recipientToken,
+      this.msisdn,
+      this.providerCode});
 
   factory _$InitiatePaymentRequestDtoImpl.fromJson(Map<String, dynamic> json) =>
       _$$InitiatePaymentRequestDtoImplFromJson(json);
 
+// Strategy A — registered payer session
   @override
-  final String linkSlug;
+  final String? payerSessionToken;
+// Strategy B — pre-filled recipient token
   @override
-  final String payerSessionToken;
+  final String? recipientToken;
+// Strategy C — guest MSISDN
   @override
-  final String? amount;
+  final String? msisdn;
+  @override
+  final String? providerCode;
 
   @override
   String toString() {
-    return 'InitiatePaymentRequestDto(linkSlug: $linkSlug, payerSessionToken: $payerSessionToken, amount: $amount)';
+    return 'InitiatePaymentRequestDto(payerSessionToken: $payerSessionToken, recipientToken: $recipientToken, msisdn: $msisdn, providerCode: $providerCode)';
   }
 
   @override
@@ -475,17 +505,19 @@ class _$InitiatePaymentRequestDtoImpl implements _InitiatePaymentRequestDto {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$InitiatePaymentRequestDtoImpl &&
-            (identical(other.linkSlug, linkSlug) ||
-                other.linkSlug == linkSlug) &&
             (identical(other.payerSessionToken, payerSessionToken) ||
                 other.payerSessionToken == payerSessionToken) &&
-            (identical(other.amount, amount) || other.amount == amount));
+            (identical(other.recipientToken, recipientToken) ||
+                other.recipientToken == recipientToken) &&
+            (identical(other.msisdn, msisdn) || other.msisdn == msisdn) &&
+            (identical(other.providerCode, providerCode) ||
+                other.providerCode == providerCode));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, linkSlug, payerSessionToken, amount);
+  int get hashCode => Object.hash(
+      runtimeType, payerSessionToken, recipientToken, msisdn, providerCode);
 
   /// Create a copy of InitiatePaymentRequestDto
   /// with the given fields replaced by the non-null parameter values.
@@ -506,19 +538,23 @@ class _$InitiatePaymentRequestDtoImpl implements _InitiatePaymentRequestDto {
 
 abstract class _InitiatePaymentRequestDto implements InitiatePaymentRequestDto {
   const factory _InitiatePaymentRequestDto(
-      {required final String linkSlug,
-      required final String payerSessionToken,
-      final String? amount}) = _$InitiatePaymentRequestDtoImpl;
+      {final String? payerSessionToken,
+      final String? recipientToken,
+      final String? msisdn,
+      final String? providerCode}) = _$InitiatePaymentRequestDtoImpl;
 
   factory _InitiatePaymentRequestDto.fromJson(Map<String, dynamic> json) =
       _$InitiatePaymentRequestDtoImpl.fromJson;
 
+// Strategy A — registered payer session
   @override
-  String get linkSlug;
+  String? get payerSessionToken; // Strategy B — pre-filled recipient token
   @override
-  String get payerSessionToken;
+  String? get recipientToken; // Strategy C — guest MSISDN
   @override
-  String? get amount;
+  String? get msisdn;
+  @override
+  String? get providerCode;
 
   /// Create a copy of InitiatePaymentRequestDto
   /// with the given fields replaced by the non-null parameter values.
@@ -526,6 +562,195 @@ abstract class _InitiatePaymentRequestDto implements InitiatePaymentRequestDto {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$InitiatePaymentRequestDtoImplCopyWith<_$InitiatePaymentRequestDtoImpl>
       get copyWith => throw _privateConstructorUsedError;
+}
+
+PaymentStatusDto _$PaymentStatusDtoFromJson(Map<String, dynamic> json) {
+  return _PaymentStatusDto.fromJson(json);
+}
+
+/// @nodoc
+mixin _$PaymentStatusDto {
+  String get transactionId => throw _privateConstructorUsedError;
+  String get status => throw _privateConstructorUsedError;
+  String? get externalRef => throw _privateConstructorUsedError;
+
+  /// Serializes this PaymentStatusDto to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of PaymentStatusDto
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $PaymentStatusDtoCopyWith<PaymentStatusDto> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $PaymentStatusDtoCopyWith<$Res> {
+  factory $PaymentStatusDtoCopyWith(
+          PaymentStatusDto value, $Res Function(PaymentStatusDto) then) =
+      _$PaymentStatusDtoCopyWithImpl<$Res, PaymentStatusDto>;
+  @useResult
+  $Res call({String transactionId, String status, String? externalRef});
+}
+
+/// @nodoc
+class _$PaymentStatusDtoCopyWithImpl<$Res, $Val extends PaymentStatusDto>
+    implements $PaymentStatusDtoCopyWith<$Res> {
+  _$PaymentStatusDtoCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of PaymentStatusDto
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? transactionId = null,
+    Object? status = null,
+    Object? externalRef = freezed,
+  }) {
+    return _then(_value.copyWith(
+      transactionId: null == transactionId
+          ? _value.transactionId
+          : transactionId // ignore: cast_nullable_to_non_nullable
+              as String,
+      status: null == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as String,
+      externalRef: freezed == externalRef
+          ? _value.externalRef
+          : externalRef // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$PaymentStatusDtoImplCopyWith<$Res>
+    implements $PaymentStatusDtoCopyWith<$Res> {
+  factory _$$PaymentStatusDtoImplCopyWith(_$PaymentStatusDtoImpl value,
+          $Res Function(_$PaymentStatusDtoImpl) then) =
+      __$$PaymentStatusDtoImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String transactionId, String status, String? externalRef});
+}
+
+/// @nodoc
+class __$$PaymentStatusDtoImplCopyWithImpl<$Res>
+    extends _$PaymentStatusDtoCopyWithImpl<$Res, _$PaymentStatusDtoImpl>
+    implements _$$PaymentStatusDtoImplCopyWith<$Res> {
+  __$$PaymentStatusDtoImplCopyWithImpl(_$PaymentStatusDtoImpl _value,
+      $Res Function(_$PaymentStatusDtoImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of PaymentStatusDto
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? transactionId = null,
+    Object? status = null,
+    Object? externalRef = freezed,
+  }) {
+    return _then(_$PaymentStatusDtoImpl(
+      transactionId: null == transactionId
+          ? _value.transactionId
+          : transactionId // ignore: cast_nullable_to_non_nullable
+              as String,
+      status: null == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as String,
+      externalRef: freezed == externalRef
+          ? _value.externalRef
+          : externalRef // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$PaymentStatusDtoImpl implements _PaymentStatusDto {
+  const _$PaymentStatusDtoImpl(
+      {required this.transactionId, required this.status, this.externalRef});
+
+  factory _$PaymentStatusDtoImpl.fromJson(Map<String, dynamic> json) =>
+      _$$PaymentStatusDtoImplFromJson(json);
+
+  @override
+  final String transactionId;
+  @override
+  final String status;
+  @override
+  final String? externalRef;
+
+  @override
+  String toString() {
+    return 'PaymentStatusDto(transactionId: $transactionId, status: $status, externalRef: $externalRef)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$PaymentStatusDtoImpl &&
+            (identical(other.transactionId, transactionId) ||
+                other.transactionId == transactionId) &&
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.externalRef, externalRef) ||
+                other.externalRef == externalRef));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, transactionId, status, externalRef);
+
+  /// Create a copy of PaymentStatusDto
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$PaymentStatusDtoImplCopyWith<_$PaymentStatusDtoImpl> get copyWith =>
+      __$$PaymentStatusDtoImplCopyWithImpl<_$PaymentStatusDtoImpl>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$PaymentStatusDtoImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _PaymentStatusDto implements PaymentStatusDto {
+  const factory _PaymentStatusDto(
+      {required final String transactionId,
+      required final String status,
+      final String? externalRef}) = _$PaymentStatusDtoImpl;
+
+  factory _PaymentStatusDto.fromJson(Map<String, dynamic> json) =
+      _$PaymentStatusDtoImpl.fromJson;
+
+  @override
+  String get transactionId;
+  @override
+  String get status;
+  @override
+  String? get externalRef;
+
+  /// Create a copy of PaymentStatusDto
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$PaymentStatusDtoImplCopyWith<_$PaymentStatusDtoImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 InitiatePaymentResponseDto _$InitiatePaymentResponseDtoFromJson(

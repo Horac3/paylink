@@ -64,6 +64,8 @@ import { AdminModule } from './admin/admin.module';
         NODE_ENV: Joi.string()
           .valid('development', 'production', 'test')
           .default('development'),
+        MERCHANT_WEB_URL: Joi.string().uri().optional(),
+        SWAGGER_ENABLED: Joi.string().valid('true', 'false').optional(),
       }),
     }),
 

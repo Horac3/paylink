@@ -94,7 +94,6 @@ export function LinksPage() {
                   <Th>Type</Th>
                   <Th>Amount</Th>
                   <Th>Status</Th>
-                  <Th>Created</Th>
                   <Th>Expires</Th>
                   <Th></Th>
                 </tr>
@@ -114,7 +113,6 @@ export function LinksPage() {
                     <Td>
                       <Badge status={link.status} type="link" />
                     </Td>
-                    <Td className="text-text-secondary">{formatDate(link.createdAt)}</Td>
                     <Td className="text-text-secondary">
                       {link.expiresAt ? formatDate(link.expiresAt) : '—'}
                     </Td>

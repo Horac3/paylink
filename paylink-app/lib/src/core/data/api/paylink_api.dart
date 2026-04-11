@@ -12,7 +12,7 @@ part 'paylink_api.g.dart';
 abstract class PaylinkApi {
   factory PaylinkApi(Dio dio, {String baseUrl}) = _PaylinkApi;
 
-  // ── Merchant Auth ──────────────────────────────────────────────────────
+  // ── Merchant Auth ──────────────────────────────────────────────────────────
   @POST('/auth/register')
   Future<AuthResponseDto> merchantRegister(
       @Body() MerchantRegisterRequestDto body);
@@ -23,7 +23,7 @@ abstract class PaylinkApi {
   @POST('/auth/refresh')
   Future<AuthResponseDto> refreshToken(@Body() RefreshTokenRequestDto body);
 
-  // ── Payer Auth ─────────────────────────────────────────────────────────
+  // ── Payer Auth ─────────────────────────────────────────────────────────────
   @POST('/payer-auth/register')
   Future<void> payerRegister(@Body() PayerRegisterRequestDto body);
 
@@ -31,11 +31,12 @@ abstract class PaylinkApi {
   Future<PayerAuthResponseDto> payerVerifyOtp(
       @Body() PayerVerifyOtpRequestDto body);
 
-  // ── Links ──────────────────────────────────────────────────────────────
+  // ── Links ──────────────────────────────────────────────────────────────────
   @GET('/links')
   Future<PagedResponseDto<PaymentLinkDto>> getLinks(
     @Query('page') int page,
     @Query('limit') int limit,
+    @Query('status') String? status,
   );
 
   @POST('/links')
@@ -44,13 +45,13 @@ abstract class PaylinkApi {
   @GET('/links/{id}')
   Future<LinkDetailDto> getLinkDetail(@Path('id') String id);
 
-  @PATCH('/links/{id}/archive')
-  Future<void> archiveLink(@Path('id') String id);
+  @DELETE('/links/{id}')
+  Future<void> cancelLink(@Path('id') String id);
 
   @POST('/links/bulk-send')
   Future<void> bulkSend(@Body() BulkSendRequestDto body);
 
-  // ── Transactions ───────────────────────────────────────────────────────
+  // ── Transactions ───────────────────────────────────────────────────────────
   @GET('/transactions')
   Future<PagedResponseDto<TransactionDto>> getTransactions(
     @Query('page') int page,
@@ -61,26 +62,28 @@ abstract class PaylinkApi {
   @GET('/transactions/{id}')
   Future<TransactionDto> getTransactionDetail(@Path('id') String id);
 
-  // ── Payments ───────────────────────────────────────────────────────────
-  @POST('/payments/initiate')
+  // ── Payments ───────────────────────────────────────────────────────────────
+  @POST('/pay/{slug}/initiate')
   Future<InitiatePaymentResponseDto> initiatePayment(
-      @Body() InitiatePaymentRequestDto body);
+    @Path('slug') String slug,
+    @Body() InitiatePaymentRequestDto body,
+  );
 
-  @GET('/payments/{id}/status')
-  Future<TransactionDto> getPaymentStatus(@Path('id') String id);
+  @GET('/pay/status/{txnId}')
+  Future<PaymentStatusDto> getPaymentStatus(@Path('txnId') String txnId);
 
-  // ── Refunds ────────────────────────────────────────────────────────────
+  // ── Refunds ────────────────────────────────────────────────────────────────
   @POST('/refunds')
   Future<void> requestRefund(@Body() RefundRequestDto body);
 
-  // ── Analytics ─────────────────────────────────────────────────────────
+  // ── Analytics ─────────────────────────────────────────────────────────────
   @GET('/analytics/summary')
   Future<AnalyticsSummaryDto> getAnalyticsSummary(
     @Query('from') String from,
     @Query('to') String to,
   );
 
-  // ── Subscriptions ──────────────────────────────────────────────────────
+  // ── Subscriptions ──────────────────────────────────────────────────────────
   @GET('/subscriptions')
   Future<PagedResponseDto<SubscriptionDto>> getSubscriptions(
     @Query('page') int page,

@@ -54,6 +54,7 @@ export interface PaymentLinkProps {
   expiresAt: Date | null;
   metadata: Record<string, unknown> | null;
   qrCodeBase64: string | null;
+  createdAt?: Date;
 }
 
 /**
@@ -96,6 +97,9 @@ export class PaymentLink {
   }
   get qrCodeBase64(): string | null {
     return this._props.qrCodeBase64;
+  }
+  get createdAt(): Date | undefined {
+    return this._props.createdAt;
   }
   get domainEvents(): DomainEvent[] {
     return [...this._domainEvents];

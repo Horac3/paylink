@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Smartphone } from 'lucide-react'
+import { Smartphone, FlaskConical } from 'lucide-react'
 import type { PublicLink } from '../../api/payment'
 import { formatMoney, formatCountdown } from '../../utils/formatMoney'
 
@@ -7,13 +7,14 @@ interface PollingScreenProps {
   link: PublicLink
   expiresAt: number
   onCancel: () => void
+  sandboxHint?: string
 }
 
 /**
  * "Check your phone" screen shown while polling for payment confirmation.
  * Shows a CSS-animated phone icon, countdown timer, and cancel button.
  */
-export function PollingScreen({ link, expiresAt, onCancel }: PollingScreenProps) {
+export function PollingScreen({ link, expiresAt, onCancel, sandboxHint }: PollingScreenProps) {
   const [secondsLeft, setSecondsLeft] = useState(() =>
     Math.max(0, Math.round((expiresAt - Date.now()) / 1000)),
   )
@@ -83,6 +84,16 @@ export function PollingScreen({ link, expiresAt, onCancel }: PollingScreenProps)
           {formatCountdown(secondsLeft)}
         </p>
       </div>
+
+      {/* Sandbox hint (dev only) */}
+      {import.meta.env.DEV && sandboxHint && (
+        <div className="flex items-center gap-1.5 rounded-lg border border-dashed border-yellow-300 bg-yellow-50 px-3 py-2">
+          <FlaskConical size={12} className="text-yellow-600 flex-shrink-0" />
+          <span className="text-xs text-yellow-700">
+            Sandbox expected: <strong>{sandboxHint}</strong>
+          </span>
+        </div>
+      )}
 
       {/* Cancel */}
       <button

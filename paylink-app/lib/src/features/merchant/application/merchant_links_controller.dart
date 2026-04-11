@@ -15,7 +15,7 @@ class MerchantLinksController extends _$MerchantLinksController {
     _page = 1;
     _hasMore = true;
     final api = ref.read(paylinkApiProvider);
-    final res = await api.getLinks(_page, _limit);
+    final res = await api.getLinks(_page, _limit, null);
     _hasMore = res.hasMore;
     return res.items;
   }
@@ -27,9 +27,9 @@ class MerchantLinksController extends _$MerchantLinksController {
     state = AsyncData([created, ...current]);
   }
 
-  Future<void> archiveLink(String id) async {
+  Future<void> cancelLink(String id) async {
     final api = ref.read(paylinkApiProvider);
-    await api.archiveLink(id);
+    await api.cancelLink(id);
     final current = await future;
     state = AsyncData(current.where((l) => l.id != id).toList());
   }
@@ -39,7 +39,7 @@ class MerchantLinksController extends _$MerchantLinksController {
     final current = await future;
     _page++;
     final api = ref.read(paylinkApiProvider);
-    final res = await api.getLinks(_page, _limit);
+    final res = await api.getLinks(_page, _limit, null);
     _hasMore = res.hasMore;
     state = AsyncData([...current, ...res.items]);
   }

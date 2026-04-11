@@ -34,16 +34,29 @@ Map<String, dynamic> _$$SubscriptionDtoImplToJson(
       'createdAt': instance.createdAt,
     };
 
+_$PagedMetaDtoImpl _$$PagedMetaDtoImplFromJson(Map<String, dynamic> json) =>
+    _$PagedMetaDtoImpl(
+      page: (json['page'] as num).toInt(),
+      limit: (json['limit'] as num).toInt(),
+      total: (json['total'] as num).toInt(),
+      totalPages: (json['totalPages'] as num).toInt(),
+    );
+
+Map<String, dynamic> _$$PagedMetaDtoImplToJson(_$PagedMetaDtoImpl instance) =>
+    <String, dynamic>{
+      'page': instance.page,
+      'limit': instance.limit,
+      'total': instance.total,
+      'totalPages': instance.totalPages,
+    };
+
 _$PagedResponseDtoImpl<T> _$$PagedResponseDtoImplFromJson<T>(
   Map<String, dynamic> json,
   T Function(Object? json) fromJsonT,
 ) =>
     _$PagedResponseDtoImpl<T>(
-      items: (json['items'] as List<dynamic>).map(fromJsonT).toList(),
-      total: (json['total'] as num).toInt(),
-      page: (json['page'] as num).toInt(),
-      limit: (json['limit'] as num).toInt(),
-      hasMore: json['hasMore'] as bool,
+      items: (json['data'] as List<dynamic>).map(fromJsonT).toList(),
+      meta: PagedMetaDto.fromJson(json['meta'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$$PagedResponseDtoImplToJson<T>(
@@ -51,9 +64,6 @@ Map<String, dynamic> _$$PagedResponseDtoImplToJson<T>(
   Object? Function(T value) toJsonT,
 ) =>
     <String, dynamic>{
-      'items': instance.items.map(toJsonT).toList(),
-      'total': instance.total,
-      'page': instance.page,
-      'limit': instance.limit,
-      'hasMore': instance.hasMore,
+      'data': instance.items.map(toJsonT).toList(),
+      'meta': instance.meta,
     };

@@ -19,18 +19,35 @@ class SubscriptionDto with _$SubscriptionDto {
       _$SubscriptionDtoFromJson(json);
 }
 
-@Freezed(genericArgumentFactories: true)
-class PagedResponseDto<T> with _$PagedResponseDto<T> {
-  const factory PagedResponseDto({
-    required List<T> items,
-    required int total,
+@freezed
+class PagedMetaDto with _$PagedMetaDto {
+  const factory PagedMetaDto({
     required int page,
     required int limit,
-    required bool hasMore,
+    required int total,
+    required int totalPages,
+  }) = _PagedMetaDto;
+  factory PagedMetaDto.fromJson(Map<String, dynamic> json) =>
+      _$PagedMetaDtoFromJson(json);
+}
+
+@Freezed(genericArgumentFactories: true)
+class PagedResponseDto<T> with _$PagedResponseDto<T> {
+  const PagedResponseDto._();
+
+  const factory PagedResponseDto({
+    @JsonKey(name: 'data') required List<T> items,
+    required PagedMetaDto meta,
   }) = _PagedResponseDto<T>;
+
   factory PagedResponseDto.fromJson(
     Map<String, dynamic> json,
     T Function(Object?) fromJsonT,
   ) =>
       _$PagedResponseDtoFromJson(json, fromJsonT);
+
+  bool get hasMore => meta.page < meta.totalPages;
+  int get total => meta.total;
+  int get page => meta.page;
+  int get limit => meta.limit;
 }

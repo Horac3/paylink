@@ -17,6 +17,8 @@ export class ValidateLinkHandler implements IQueryHandler<ValidateLinkQuery> {
   async execute(query: ValidateLinkQuery): Promise<ValidatedLink> {
     const link = await this.repo.findBySlug(query.slug);
     if (!link) throw new NotFoundError('PaymentLink', query.slug);
+    if (link.isExpired())
+      throw new DomainError('Payment link has expired');
     if (!link.isActive())
       throw new DomainError(`Payment link is not active: ${link.status}`);
 

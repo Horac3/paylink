@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/data/providers/core_providers.dart';
+import '../../../../core/domain/msisdn_utils.dart';
 import '../../../../core/presentation/theme/app_colors.dart';
 import '../../../../core/presentation/theme/app_text_styles.dart';
 import '../../../../core/presentation/widgets/core_widgets.dart';
@@ -11,7 +12,12 @@ import '../../application/payer_payment_controller.dart';
 
 class PayerPaymentConfirmPage extends ConsumerWidget {
   final String slug;
-  const PayerPaymentConfirmPage({super.key, required this.slug});
+  final String? recipientToken;
+  const PayerPaymentConfirmPage({
+    super.key,
+    required this.slug,
+    this.recipientToken,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -55,8 +61,7 @@ class PayerPaymentConfirmPage extends ConsumerWidget {
       ),
       body: paymentAsync.when(
         data: (state) => _buildBody(context, ref, state),
-        loading: () =>
-            const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(
           child: Text(
             e.toString(),
@@ -70,7 +75,7 @@ class PayerPaymentConfirmPage extends ConsumerWidget {
   Widget _buildBody(
       BuildContext context, WidgetRef ref, PaymentFlowState state) {
     return switch (state) {
-      PaymentIdle() => _IdleView(slug: slug),
+      PaymentIdle() => _IdleView(slug: slug, recipientToken: recipientToken),
       PaymentAwaitingBiometric() => const _StatusView(
           icon: Icons.fingerprint,
           iconColor: AppColors.secondary,
@@ -84,93 +89,212 @@ class PayerPaymentConfirmPage extends ConsumerWidget {
       PaymentSuccess(transactionId: final txId) => _SuccessView(txId: txId),
       PaymentFailed(reason: final reason) => _FailedView(
           reason: reason,
-          onRetry: () => ref
-              .read(payerPaymentControllerProvider.notifier)
-              .reset(),
+          onRetry: () =>
+              ref.read(payerPaymentControllerProvider.notifier).reset(),
         ),
     };
   }
 }
 
-// ─── Idle: show slug + confirm button ─────────────────────────────────────────
+// ─── Idle: strategy detection + confirm UI ────────────────────────────────────
 
-class _IdleView extends ConsumerWidget {
+class _IdleView extends ConsumerStatefulWidget {
   final String slug;
-  const _IdleView({required this.slug});
+  final String? recipientToken;
+  const _IdleView({required this.slug, this.recipientToken});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_IdleView> createState() => _IdleViewState();
+}
+
+class _IdleViewState extends ConsumerState<_IdleView> {
+  /// null = still loading, true/false = determined
+  bool? _hasSession;
+  final _msisdnCtrl = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  MobileProvider? _detectedProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkSession();
+  }
+
+  @override
+  void dispose() {
+    _msisdnCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _checkSession() async {
+    final storage = ref.read(secureStorageProvider);
+    final token = await storage.getPayerSessionToken();
+    if (mounted) setState(() => _hasSession = token != null);
+  }
+
+  bool get _showGuestForm =>
+      _hasSession == false && widget.recipientToken == null;
+
+  void _onMsisdnChanged(String v) {
+    final p = detectProvider(v.trim());
+    if (p != _detectedProvider) setState(() => _detectedProvider = p);
+  }
+
+  void _confirm() {
+    if (_showGuestForm && !_formKey.currentState!.validate()) return;
+    HapticFeedback.mediumImpact();
+    final notifier = ref.read(payerPaymentControllerProvider.notifier);
+    if (_hasSession == true) {
+      notifier.initiateWithSession(linkSlug: widget.slug);
+    } else if (widget.recipientToken != null) {
+      notifier.initiateWithRecipientToken(
+        linkSlug: widget.slug,
+        recipientToken: widget.recipientToken!,
+      );
+    } else {
+      final msisdn = toE164(_msisdnCtrl.text.trim());
+      notifier.initiateAsGuest(linkSlug: widget.slug, msisdn: msisdn);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_hasSession == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     final isOnline = ref.watch(connectivityProvider).value ?? true;
 
     return Padding(
       padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const SizedBox(height: 16),
-          Card(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                children: [
-                  const Icon(
-                    Icons.receipt_long,
-                    size: 48,
-                    color: AppColors.primary,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Payment Request',
-                    style: AppTextStyles.headlineMedium,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Link: $slug',
-                    style: AppTextStyles.bodyMedium
-                        .copyWith(color: AppColors.textSecondary),
-                  ),
-                ],
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SizedBox(height: 16),
+
+            // ── Payment card ──────────────────────────────────────────────────
+            Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  children: [
+                    const Icon(
+                      Icons.receipt_long,
+                      size: 48,
+                      color: AppColors.primary,
+                    ),
+                    const SizedBox(height: 16),
+                    Text('Payment Request',
+                        style: AppTextStyles.headlineMedium),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Link: ${widget.slug}',
+                      style: AppTextStyles.bodyMedium
+                          .copyWith(color: AppColors.textSecondary),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          const Spacer(),
-          Text(
-            'Your biometric will be requested to confirm this payment.',
-            style:
-                AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 16),
-          LoadingButton(
-            label: 'Confirm Payment',
-            onPressed: isOnline
-                ? () {
-                    HapticFeedback.mediumImpact();
-                    ref
-                        .read(payerPaymentControllerProvider.notifier)
-                        .initiate(linkSlug: slug);
+            const SizedBox(height: 24),
+
+            // ── Guest MSISDN input ────────────────────────────────────────────
+            if (_showGuestForm) ...[
+              Text('Enter your Malawi mobile number',
+                  style: AppTextStyles.labelMedium),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _msisdnCtrl,
+                decoration: InputDecoration(
+                  labelText: 'Phone number',
+                  hintText: '088 XXX XXXX',
+                  prefixText: '+265 ',
+                  suffixText: _detectedProvider != null &&
+                          _detectedProvider != MobileProvider.unknown
+                      ? providerLabel(_detectedProvider!)
+                      : null,
+                  suffixStyle: AppTextStyles.labelMedium
+                      .copyWith(color: AppColors.primary),
+                ),
+                keyboardType: TextInputType.phone,
+                onChanged: _onMsisdnChanged,
+                validator: (v) {
+                  if (v == null || v.trim().isEmpty) {
+                    return 'Phone number is required';
                   }
-                : null,
-          ),
-          if (!isOnline) ...[
-            const SizedBox(height: 8),
-            Text(
-              'You must be online to make a payment',
-              style: AppTextStyles.bodySmall.copyWith(color: AppColors.error),
-              textAlign: TextAlign.center,
+                  if (detectProvider(v.trim()) == MobileProvider.unknown) {
+                    return 'Unrecognised Malawi number (TNM or Airtel only)';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 24),
+            ],
+
+            const Spacer(),
+
+            // ── Strategy hint ─────────────────────────────────────────────────
+            _StrategyHint(
+              hasSession: _hasSession!,
+              hasRecipientToken: widget.recipientToken != null,
             ),
+            const SizedBox(height: 16),
+
+            LoadingButton(
+              label: 'Confirm Payment',
+              onPressed: isOnline ? _confirm : null,
+            ),
+            if (!isOnline) ...[
+              const SizedBox(height: 8),
+              Text(
+                'You must be online to make a payment',
+                style:
+                    AppTextStyles.bodySmall.copyWith(color: AppColors.error),
+                textAlign: TextAlign.center,
+              ),
+            ],
+            const SizedBox(height: 12),
+            LoadingButton(
+              label: 'Cancel',
+              outlined: true,
+              onPressed: () => context.pop(),
+            ),
+            const SizedBox(height: 24),
           ],
-          const SizedBox(height: 12),
-          LoadingButton(
-            label: 'Cancel',
-            outlined: true,
-            onPressed: () => context.pop(),
-          ),
-          const SizedBox(height: 24),
-        ],
+        ),
       ),
+    );
+  }
+}
+
+class _StrategyHint extends StatelessWidget {
+  final bool hasSession;
+  final bool hasRecipientToken;
+  const _StrategyHint(
+      {required this.hasSession, required this.hasRecipientToken});
+
+  @override
+  Widget build(BuildContext context) {
+    final (icon, label) = switch ((hasSession, hasRecipientToken)) {
+      (true, _) => (Icons.verified_user, 'Signed-in account · biometric required'),
+      (_, true) => (Icons.token, 'Pre-authorised payment · biometric required'),
+      _ => (Icons.person_outline, 'Guest payment · biometric required'),
+    };
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(icon, size: 16, color: AppColors.textSecondary),
+        const SizedBox(width: 6),
+        Text(
+          label,
+          style:
+              AppTextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
+        ),
+      ],
     );
   }
 }

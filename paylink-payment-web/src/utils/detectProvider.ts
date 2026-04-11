@@ -28,12 +28,11 @@ export function detectProvider(msisdn: string): Provider {
   const prefix3 = local.slice(0, 3)
 
   // Airtel prefixes
-  if (['99', '98', '97'].includes(prefix2)) return 'AIRTEL'
-  if (['31', '32'].includes(prefix2)) return 'AIRTEL'
-  if (prefix3 === '310' || prefix3 === '320') return 'AIRTEL'
+  if (['98', '97'].includes(prefix2)) return 'AIRTEL'
+  if (['75', '76', '77', '78'].includes(prefix2)) return 'AIRTEL'
 
   // TNM prefixes
-  if (['88', '89'].includes(prefix2)) return 'TNM'
+  if (['88', '89', '99'].includes(prefix2)) return 'TNM'
   if (prefix2 === '21') return 'TNM'
 
   return null

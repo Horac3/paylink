@@ -3,13 +3,13 @@ import type { PaymentLink, PaginatedResponse, LinkStatus } from '../types/api.ty
 
 export interface CreateLinkPayload {
   type: 'INVOICE' | 'SUBSCRIPTION' | 'DONATION' | 'REQUEST';
-  amount: number;
+  amount?: string;
   currency: string;
   description?: string;
   expiresAt?: string;
   metadata?: Record<string, string>;
-  recipientPhone?: string;
-  recipientProvider?: string;
+  recipientMsisdn?: string;
+  providerCode?: string;
   recurrenceInterval?: string;
   recurrenceMaxCycles?: number;
 }

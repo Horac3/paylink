@@ -148,10 +148,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
 
       // Deep link — payer payment confirm (no shell)
+      // Supports optional ?r=<recipientToken> query parameter
       GoRoute(
         path: '/payer/pay/:slug',
         builder: (_, state) => PayerPaymentConfirmPage(
-            slug: state.pathParameters['slug']!),
+          slug: state.pathParameters['slug']!,
+          recipientToken: state.uri.queryParameters['r'],
+        ),
       ),
     ],
   );

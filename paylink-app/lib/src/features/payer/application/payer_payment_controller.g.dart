@@ -7,7 +7,7 @@ part of 'payer_payment_controller.dart';
 // **************************************************************************
 
 String _$payerPaymentControllerHash() =>
-    r'5e965e53ef2512d00253bd87a03d516486089a0b';
+    r'f1d062e5c1f60683ad54d1f8c33a999390345e8a';
 
 /// See also [PayerPaymentController].
 @ProviderFor(PayerPaymentController)
